@@ -1,0 +1,15 @@
+# Datos y credenciales — nunca versionar
+*.env
+.env.*
+**/config.php.local
+moodledata/
+*.sql
+*.sql.gz
+
+# SO / editores
+.DS_Store
+Thumbs.db
+*.swp
+
+# Node (por si algún MCP local instala dependencias aquí)
+node_modules/

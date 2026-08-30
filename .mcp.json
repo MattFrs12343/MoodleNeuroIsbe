@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    },
+    "mysql": {
+      "command": "uvx",
+      "args": ["mcp-server-mysql"],
+      "env": {
+        "MYSQL_HOST": "localhost",
+        "MYSQL_PORT": "3306",
+        "MYSQL_USER": "moodle_user",
+        "MYSQL_DB": "moodle_db",
+        "MYSQL_PASS": "${MYSQL_PASS}"
+      }
+    }
+  }
+}

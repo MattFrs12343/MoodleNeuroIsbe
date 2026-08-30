@@ -1,0 +1,83 @@
+// Componentes del tema plataforma.
+
+body {
+    font-family: $font-family;
+}
+
+// Hero de la portada.
+.hero {
+    background: linear-gradient(135deg, $primary, $dark);
+    color: $light;
+    padding: 3rem 1.5rem;
+    text-align: center;
+
+    .hero-title {
+        font-size: 2.2rem;
+        margin-bottom: .5rem;
+    }
+    .hero-subtitle {
+        font-size: 1.1rem;
+        opacity: .9;
+        margin-bottom: 1.5rem;
+    }
+}
+
+// Grilla de módulos (tarjetas).
+.modulos-grid {
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    grid-template-columns: 1fr;
+
+    @media (min-width: 576px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    @media (min-width: 992px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.modulo-card {
+    border-radius: $card-radius;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+    transition: transform .15s ease;
+
+    &:hover {
+        transform: translateY(-3px);
+    }
+
+    .modulo-card-img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+    }
+    .modulo-card-body {
+        padding: 1rem;
+    }
+    .modulo-card-title {
+        margin: 0 0 .35rem;
+        font-size: 1.15rem;
+    }
+    .modulo-card-summary {
+        margin: 0 0 .75rem;
+        opacity: .8;
+        font-size: .95rem;
+    }
+}
+
+// Reproductor de video responsive 16:9.
+.embed-video {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+
+    iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+}

@@ -1,0 +1,15 @@
+// Presets del tema plataforma (child de boost).
+// Separar aquí paleta y tipografía para que _extra.scss solo aporte componentes.
+
+$brand-success: #2e7d32;
+$brand-info:    #1565c0;
+$brand-warn:    #ef6c00;
+$brand-danger:  #c62828;
+
+$primary:   #1565c0;
+$secondary: #f5f7fa;
+$dark:      #102a43;
+$light:     #ffffff;
+
+$card-radius:  10px;
+$font-family:  "Segoe UI", system-ui, -apple-system, sans-serif;

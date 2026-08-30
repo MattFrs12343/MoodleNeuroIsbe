@@ -1,0 +1,7 @@
+﻿modulo_shortname;modulo_fullname;modulo_summary;unidad_n;unidad_nombre;tipo_recurso;nombre_recurso;descripcion;url_embed;url_dropbox;archivo_relativo
+mod01;Módulo 01 — Introdução;Apresentação geral do Módulo 01.;1;Unidade 1 — Conceitos iniciais;video_embed;Vídeo da aula 1;Aula introdutória do Módulo 01.;https://www.youtube-nocookie.com/embed/VIDEOID001;;
+mod01;Módulo 01 — Introdução;Apresentação geral do Módulo 01.;1;Unidade 1 — Conceitos iniciais;video_dropbox;Vídeo da aula 1 (download);Baixar o vídeo da aula 1 em MP4.;;https://www.dropbox.com/scl/fi/exemplo/video-aula-1.mp4?dl=0;
+mod01;Módulo 01 — Introdução;Apresentação geral do Módulo 01.;1;Unidade 1 — Conceitos iniciais;audio_mp3;Áudio da aula 1;Áudio complementar da aula 1.;;;/home/USER/import/audio-aula-1.mp3
+mod01;Módulo 01 — Introdução;Apresentação geral do Módulo 01.;1;Unidade 1 — Conceitos iniciais;doc_pdf;PDF — Apostila Unidade 1;Material de apoio em PDF da Unidade 1.;;;/home/USER/import/apostila-unidade-1.pdf
+mod01;Módulo 01 — Introdução;Apresentação geral do Módulo 01.;1;Unidade 1 — Conceitos iniciais;doc_docx;DOCX — Exercícios Unidade 1;Lista de exercícios editável da Unidade 1.;;;/home/USER/import/exercicios-unidade-1.docx
+mod01;Módulo 01 — Introdução;Apresentação geral do Módulo 01.;1;Unidade 1 — Conceitos iniciais;doc_txt;TXT — Leia-me Unidade 1;Notas rápidas em texto simples da Unidade 1.;;;/home/USER/import/leia-me-unidade-1.txt
