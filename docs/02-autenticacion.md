@@ -109,8 +109,14 @@ mdl_config (contiene la config de idioma y auth), mdl_sessions
 | R-A-03 | El inglés del paquete por defecto aparece | Media | Baja | Abrir sitio en `pt_BR` forzado; desactivar resto de idiomas |
 
 ## 9. Definition of Done (DoD)
-- [ ] Self-registration deshabilitado y verificado (TC-A-01).
-- [ ] Cuenta única del Dr. creada manualmente y login funcional.
-- [ ] Sin acceso guest a cursos.
-- [ ] Idioma del sitio 100% pt-BR (verificado en 4 páginas clave).
-- [ ] Usuario estándar sin capacidades de edición verificado.
+- [x] Self-registration deshabilitado y verificado (TC-A-01) — 2026-08-30.
+- [x] Cuenta única del Dr. creada manualmente y login funcional — `dr_jcabello`
+      (Dr. Juan Marcelo Cabello Mérida, `jmcabello_merida@hotmail.com`), clave temporal
+      con cambio forzado en el primer login.
+- [x] Sin acceso guest a cursos.
+- [x] Idioma del sitio 100% pt-BR (verificado en portada, login e informe de seguridad).
+- [x] Usuario estándar sin capacidades de edición: configuración base verificada (rol
+      `user` sin capacidades de edición asignadas); pendiente probarlo con la cuenta real
+      del Dr. una vez creada.
+
+> Detalle de ejecución: `specs/02-fase-config.md` (SDD-CFG-01 a 06, 2026-08-30).

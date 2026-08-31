@@ -7,11 +7,13 @@
 
 ## ▶ PUNTO DE CONTINUIDAD (LEER PRIMERO)
 
-> **Continuar aquí: FASE 2 — Configuración base** (`specs/02-fase-config.md`, SDD-CFG-01).
-> Fase 1 (infraestructura) quedó **completa y verificada** el 2026-08-30 sobre el hosting
-> real (`portal.examenes-neuro.com`). Sigue pendiente de datos del Dr. (no bloquea Fase 2,
-> sí bloqueará Fase 4 en adelante): correo real del admin, acceso YouTube/Dropbox,
-> conteos de contenido, logo/paleta — ver `docs/13-info-necesaria.md` §2, §3, §5.
+> **Continuar aquí: FASE 4 — Carga de contenido**, pero está **BLOQUEADA**: la Fase 3
+> llegó hasta donde se pudo sin datos reales (T3.3, crear los cursos Módulo NN, necesita
+> el número/orden de módulos del Dr., `docs/13-info-necesaria.md` §3). En cuanto llegue
+> ese dato, se retoma T3.3 y se sigue a Fase 4. Mientras tanto puede adelantarse T2.5
+> (textos legales, ya hay contacto: jmcabello_merida@hotmail.com) si se prefiere.
+> Sigue pendiente del Dr.: acceso YouTube/Dropbox, conteos de contenido, logo/paleta —
+> ver `docs/13-info-necesaria.md` §2, §3, §5.
 
 ---
 
@@ -19,11 +21,11 @@
 
 | Fase | Archivo | Progreso | Estado |
 |---|---|---|---|
-| 0 · Datos y setup | `docs/13-info-necesaria.md` | 🟡 Parcial | Falta: contenido, diseño, YouTube/Dropbox del Dr. (no bloquea Fase 2) |
+| 0 · Datos y setup | `docs/13-info-necesaria.md` | 🟡 Parcial | Falta: contenido, diseño, YouTube/Dropbox del Dr. |
 | 1 · Infraestructura | [01-infra.md](01-infra.md) | ✅ 100% (7/7) | HECHO (2026-08-30, sobre hosting real) |
-| 2 · Configuración base | [02-config.md](02-config.md) | ⬜ 0% | PENDIENTE — **siguiente** |
-| 3 · Estructura | [03-estructura.md](03-estructura.md) | ⬜ 0% | PENDIENTE |
-| 4 · Carga de contenido | [04-carga.md](04-carga.md) | ⬜ 0% | PENDIENTE (bloqueada por contenido/YouTube/Dropbox del Dr.) |
+| 2 · Configuración base | [02-config.md](02-config.md) | 🟡 83% (5/6) | Falta T2.5 (legal) — dato de contacto ya disponible, solo falta redactar y revisar el texto |
+| 3 · Estructura | [03-estructura.md](03-estructura.md) | 🟡 63% (2.5/4) | **BLOQUEADA** en T3.3 — falta número/orden real de módulos del Dr. (§3) |
+| 4 · Carga de contenido | [04-carga.md](04-carga.md) | ⬜ 0% | PENDIENTE (bloqueada por T3.3 + contenido/YouTube/Dropbox del Dr.) |
 | 5 · Tema y portada | [05-tema.md](05-tema.md) | ⬜ 0% | PENDIENTE (bloqueada por logo/paleta del Dr.) |
 | 6 · QA / producción | [06-qa.md](06-qa.md) | ⬜ 0% | PENDIENTE |
 
@@ -42,8 +44,8 @@
 |---|---|
 | 0 | ☐ |
 | 1 | ☑ |
-| 2 | ☐ |
-| 3 | ☐ |
+| 2 | ☑ (parcial: 5/6, falta T2.5) |
+| 3 | ☑ (parcial: 2.5/4, bloqueada en T3.3) |
 | 4 | ☐ |
 | 5 | ☐ |
 | 6 | ☐ |

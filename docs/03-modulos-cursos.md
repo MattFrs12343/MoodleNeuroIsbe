@@ -45,8 +45,12 @@ Categoria raiz  📁 "Plataforma" (o nombre del proyecto)
 - RF-M-03: Como default, el curso está **visible** para usuarios autenticados.
 - RF-M-04: Activar el **modo de edición** solo para el rol admin.
 - RF-M-05: Configurar el **summary/descripción** de cada módulo (aparece en la tarjeta de la portada — Spec-06).
-- RF-M-06: Los usuarios estándar no se matriculan manualmente; se usa auto-enrol con el rol por defecto
-  (ver Spec-02, RF-A-07).
+- RF-M-06: **Actualizado (2026-08-30)**: dado el modo mono-usuario (`docs/02-autenticacion.md`,
+  sin `self`/`guest` enrolment habilitados), no existe un "auto-enrol" real sin esos plugins.
+  El mecanismo efectivo es: el método `manual` de inscripción queda activo en cada curso
+  (heredado de la plantilla, ver `specs/03-fase-estructura.md` SDD-EST-02), y el **único
+  usuario** (el Dr.) se inscribe con rol `Authenticated user` vía script al crear cada
+  módulo real (SDD-EST-03) — trivial al ser una sola persona, no una inscripción masiva.
 
 ## 5. Configuración en Moodle (checklist)
 
@@ -88,8 +92,14 @@ Nota: no se extiende el esquema en v1 (se aprovechan campos nativos: `summary`,
 | R-M-03 | Formatos inconsistentes entre módulos | Media | Baja | Plantilla de curso de referencia clonable |
 
 ## 9. Definition of Done (DoD)
-- [ ] Categorías creadas (`Módulos`) con al menos 1 curso plantilla.
-- [ ] Formato Temas y secciones numeradas verificados.
-- [ ] Enrolamiento por defecto funcionando para cualquier usuario autenticado.
-- [ ] Summary/descripción de cada curso completado para la portada.
-- [ ] Curso plantilla clonable documentado.
+- [x] Categorías creadas (`Módulos`) con al menos 1 curso plantilla — 2026-08-30
+      (`Plataforma` → `Módulos` → `mod00`, ver `specs/03-fase-estructura.md`).
+- [x] Formato Temas y secciones numeradas verificados (6 secciones nombradas en `mod00`).
+- [ ] Enrolamiento del Dr. verificado en un curso real — pendiente de que exista al menos
+      un módulo real (SDD-EST-03, bloqueada por datos de contenido).
+- [ ] Summary/descripción de cada curso completado para la portada — pendiente (no hay
+      cursos reales todavía, solo la plantilla).
+- [x] Curso plantilla clonable documentado (`mod00`, `visible=0`).
+
+> Detalle de ejecución: `specs/03-fase-estructura.md` (SDD-EST-01/02 cerradas 2026-08-30;
+> SDD-EST-03 bloqueada por `docs/13-info-necesaria.md` §3).

@@ -45,8 +45,8 @@
 | `THEME` | `plataforma` |
 | `FORMAT_CURSO` | `topics` |
 | `NUM_SECCIONES_BASE` | 6 (5 unidades + sección 0) |
-| `SQL_USUARIO_ADMIN` | Definir: `admin` |
-| `NOMBRE_MDLS_USER` | `dr_{nombre}` o según cliente |
+| `SQL_USUARIO_ADMIN` | `admin` (desarrollador, `dev@somoscdv.com` temporal) |
+| `NOMBRE_MDLS_USER` | `dr_jcabello` — **Dr. Juan Marcelo Cabello Mérida**, `jmcabello_merida@hotmail.com` (confirmado y creado 2026-08-30) |
 
 ## 4. Estructura de contenido
 

@@ -109,8 +109,7 @@ function get_or_create_course(array $row, string $categoryname): int {
         'summaryformat' => FORMAT_HTML,
         'format'        => 'topics',
     ];
-    $category = \core_course_category::get($categoryid);
-    $course = $category->create_course($data);
+    $course = create_course($data);
     return (int)$course->id;
 }
 
@@ -118,10 +117,11 @@ function get_or_create_course(array $row, string $categoryname): int {
 function ensure_section(int $courseid, int $sectionnum, string $sectionname): void {
     global $DB;
     $course = $DB->get_record('course', ['id' => $courseid]);
-    $sections = course_create_sections_if_missing($course, $sectionnum);
-    if (!empty($sectionname) && isset($sections[$sectionnum]) && empty($sections[$sectionnum]->name)) {
-        $sections[$sectionnum]->name = $sectionname;
-        $DB->update_record('course_sections', $sections[$sectionnum]);
+    course_create_sections_if_missing($course, $sectionnum);
+    $section = $DB->get_record('course_sections', ['course' => $courseid, 'section' => $sectionnum]);
+    if (!empty($sectionname) && $section && empty($section->name)) {
+        $section->name = $sectionname;
+        $DB->update_record('course_sections', $section);
     }
 }
 

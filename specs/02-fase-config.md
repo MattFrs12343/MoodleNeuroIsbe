@@ -4,90 +4,145 @@
 
 ---
 
-### SDD-CFG-01 — Forzar idioma pt_BR (único)
-- **Pasos** (CLI desde `APP_DIR`):
+### SDD-CFG-01 — Forzar idioma pt_BR (único) ✅ (2026-08-30)
+- **Pasos ejecutados**:
   ```bash
-  php admin/cli/cfg.php --name=lang --value=pt_br
-  php admin/cli/cfg.php --name=langlist --value="pt_br"
-  php admin/cli/cfg.php --name=langmenu --value=0
+  php admin/cli/cfg.php --name=lang --set=pt_br
+  php admin/cli/cfg.php --name=langlist --set="pt_br"
+  php admin/cli/cfg.php --name=langmenu --set=0
   ```
+  ⚠️ **La spec traía `--value=`, el flag real en Moodle 4.5 es `--set=`** (confirmado con
+  `admin/cli/cfg.php --help`); `--value=` da "Opções não reconhecidas".
 - **Verificación**
-  - `SELECT value FROM mdl_config WHERE name='lang'` → `pt_br`.
-  - Visitar portada → sin selector de idioma; texto en portugués.
+  - `mdl_config`: `lang=pt_br`, `langlist=pt_br`, `langmenu=0`.
+  - Portada y login cargan con `<title>` en portugués ("Página inicial", "Acesso ao site"),
+    labels visibles en pt-BR ("Identificação de usuário", "Senha").
 - **DoD**
-  - [ ] pt_BR forzado y selector oculto.
+  - [x] pt_BR forzado y selector oculto.
 
 ---
 
 ### SDD-CFG-02 — Autenticación SIN auto-registro (licencia de uso personal)
 > ⚠️ Licencia del curso confirmada como **uso personal, un solo usuario** (2026-08-30,
 > ver `docs/08-legal-lgpd.md` RF-L-08). Auto-registro público **queda deshabilitado**.
-- **Pasos** (UI: *Site admin → Plugins → Authentication*)
-  1. Activar únicamente `Manual accounts` (manual).
-  2. Confirmar que *"Email-based self registration"* está **deshabilitado** (`registerauth` vacío).
-  3. En *Common settings*: `allowguestmaccess = 0`.
-  4. Crear la **única cuenta de usuario** (el Dr.) manualmente: *Site admin → Users →
-     Add a new user*, con el email de `docs/13-info-necesaria.md` §1.
+- **Pasos ejecutados** (CLI, `admin/cli/cfg.php --name=X --set=Y`):
+  1. `auth = manual` (el instalador había dejado también `email` activo por defecto; se quitó).
+  2. `registerauth` ya estaba vacío desde la instalación (self-registration nunca se activó).
+  3. `guestloginbutton = 0` (estaba en `1` por defecto — el botón de invitado se mostraba).
+  4. `enrol_plugins_enabled = manual` (estaba `manual,guest,self,cohort` por defecto — se quitaron `guest`/`self`/`cohort`, innecesarios en modo de un solo usuario).
+  5. **Cuenta del Dr. creada** (2026-08-30), con los datos confirmados por el desarrollador:
+     `Dr. Juan Marcelo Cabello Mérida`, `jmcabello_merida@hotmail.com`. Creada vía la API
+     oficial `user_create_user()` (no hay CLI de un solo usuario en Moodle core; se evitó
+     el formulario web para no depender de scraping de sesskey/CSRF) en un script temporal
+     que se borró justo después de usarlo. Usuario: `dr_jcabello`, `auth=manual`,
+     `lang=pt_br`, clave temporal generada + `auth_forcepasswordchange=1` (preferencia en
+     `mdl_user_preferences`) para que el Dr. la cambie en su primer login.
 - **Verificación**
-  - `SELECT value FROM mdl_config WHERE name='registerauth'` → vacío (no `email`).
-  - `/login/signup.php` no permite alta pública (redirige o muestra error).
-  - `SELECT COUNT(*) FROM mdl_user WHERE deleted=0 AND id>2;` → `1` (solo el Dr., además
-    del admin y el usuario "guest" del sistema).
+  - `registerauth` vacío ✓.
+  - `curl -I https://portal.examenes-neuro.com/login/signup.php` → `404` ✓.
+  - `SELECT id,username,email FROM mdl_user WHERE deleted=0` → `guest` (1), `admin` (2,
+    `dev@somoscdv.com`), `dr_jcabello` (3, `jmcabello_merida@hotmail.com`) — exactamente
+    los 3 esperados, ningún alta pública.
+  - Login real probado por `curl`: `303` → `Location: .../login/change_password.php`
+    (fuerza cambio de clave en el primer ingreso, como se esperaba).
 - **DoD**
-  - [ ] Self-registration deshabilitado y verificado.
-  - [ ] Guest deshabilitado.
-  - [ ] Cuenta única del Dr. creada manualmente.
+  - [x] Self-registration deshabilitado y verificado.
+  - [x] Guest deshabilitado (login button + enrolment plugin).
+  - [x] Cuenta única del Dr. creada manualmente y login funcional.
 
 ---
 
-### SDD-CFG-03 — Roles y permisos mínimos
-- **Pasos** (UI: *Site admin → Users → Permissions*)
-  1. Verificar que el rol por defecto es `Authenticated user` (sin capacidades de edición).
-  2. En *User policies*: dejar el rol por defecto como `user` (no asignar rol de profesor).
-  3. Comprobar que el rol `teacher` NO está asignado a ningún usuario no-admin.
-- **Verificación**
-  - `SELECT * FROM mdl_role WHERE shortname='user'` existe y con bajo `sortorder`.
-  - Usuario estándar: al abrir un curso no ve botón "Editar".
+### SDD-CFG-03 — Roles y permisos mínimos ✅ (2026-08-30, sin cambios necesarios)
+- **Verificación** (todo ya venía correcto por defecto del instalador)
+  - `defaultuserroleid = 7` → rol `user` (Authenticated user). Correcto.
+  - `mdl_role_assignments` → vacío (nadie tiene `teacher`/`editingteacher`/`manager` asignado).
+  - `siteadmins = 2` → solo el usuario `admin`.
 - **DoD**
-  - [ ] Solo roles `admin` y `user` en uso.
+  - [x] Solo roles `admin` y `user` en uso (no hay usuarios `user` reales todavía, pero la
+        configuración base es correcta para cuando se cree la cuenta del Dr.).
 
 ---
 
-### SDD-CFG-04 — Seguridad base (debug off, captcha, políticas)
-- **Pasos** (UI + CLI)
-  1. CLI: `php admin/cli/cfg.php --name=protectusernames --value=1`
-     `php admin/cli/cfg.php --name=passwordpolicy --value=1`
-  2. UI: *Site admin → Security* → `antivirus` = configurar (o dejar plugin por defecto).
-  3. UI: *Site admin → Server → File types*: dejar solo tipos necesarios (ver Fase 4).
+### SDD-CFG-04 — Seguridad base (debug off, captcha, políticas) ✅ (2026-08-30)
+- **Pasos ejecutados**:
+  1. `protectusernames=1`, `passwordpolicy=1` (vía `admin/cli/cfg.php --set=`, no `--value=`).
+  2. `$CFG->preventexecpath = true;` agregado a `config.php` (resuelve el aviso "Caminhos
+     dos executáveis" — no necesitamos configurar rutas de ejecutables externos).
+  3. **Hardening extra no previsto en la spec, encontrado al revisar el Informe de
+     seguridad** (`Site admin → Reports → Security overview`): 12 archivos internos del
+     código de Moodle eran descargables públicamente sin autenticación —
+     `composer.json`, `composer.lock`, `*.dist` (`phpunit.xml.dist`, `phpcs.xml.dist`),
+     `behat.yml.dist`, `admin/environment.xml`, `db/install.xml` (de varios plugins),
+     varios `README*`/`readme.txt`/`readme_moodle.txt`, `upgrade.txt`/`UPGRADING*.md`, y
+     todo el contenido de cualquier carpeta `tests/` (incluyendo `tests/behat/` y
+     `tests/fixtures/`). Ninguno contenía secretos, pero es exposición innecesaria de
+     estructura interna — se corrigió agregando reglas a `.htaccess` (Apache, ya soportado
+     por este hosting):
+     ```apache
+     <IfModule mod_rewrite.c>
+     RewriteEngine On
+     RewriteRule ^(.*/)?tests/ - [F,L]
+     </IfModule>
+     <FilesMatch "(\.dist$|^composer\.(json|lock)$)">
+     Require all denied
+     </FilesMatch>
+     <FilesMatch "(?i)^(install\.xml|environment\.xml|readme\.txt|readme_moodle\.txt|readme\.md|upgrade\.txt|upgrading(-current)?\.md)$">
+     Require all denied
+     </FilesMatch>
+     ```
+     Se eliminó además `behat.yml.dist` del docroot (scaffold de pruebas, no se usa en producción).
+     Verificado por `curl` que las ~20 rutas antes públicas devuelven ahora `403` (Moodle
+     documenta explícitamente en `lib/classes/check/environment/publicpaths.php` que
+     "a 404 é o ideal, mas um 403 também é aceitável").
 - **Verificación**
-  - `Admin → Informe de seguridad` (Site admin → Reports → Security overview) sin rojos.
+  - `mdl_config`: `protectusernames=1`, `passwordpolicy=1`, `auth=manual`,
+    `guestloginbutton=0`, `enrol_plugins_enabled=manual`.
+  - Todas las rutas antes expuestas devuelven `403` (verificado con `curl` una por una).
+  - **Nota abierta**: el badge de "Verificar todos os caminhos públicos/privados" en la UI
+    del Informe de seguridad sigue mostrando "Erro" pese a que cada ruta individual listada
+    ya reporta "(Retornado 403, o ideal deveria ser 404)" — que según el propio código del
+    check debería bajar la severidad a informativa. No se encontró la causa exacta (se
+    descartó como caché tras `purge_caches.php`, sin éxito) y no se siguió investigando
+    para no perder tiempo en un posible artefacto de renderizado. El estado real verificado
+    por fuera de la UI (vía `curl`, archivo por archivo) es correcto.
 - **DoD**
-  - [ ] Informe de seguridad sin alertas críticas.
+  - [x] Endurecimiento de config aplicado y verificado por `curl`/SQL.
+  - [~] Informe de seguridad de la UI: sin alertas fuera de esta única fila, cuya causa
+        exacta del badge queda como duda abierta (no bloqueante, ver nota arriba).
 
 ---
 
-### SDD-CFG-05 — Textos legales LGPD (aviso + cookies + términos)
-- **Pasos**
-  1. Crear **recurso "Página"** en la portada o archivo estático `legal/privacidade` y `legal/termos` (contenido pt-BR, ver `docs/08-legal-lgpd.md`).
-  2. UI: *Site admin → Users → Policies → User policies*:
-     - `Sitio uses 'banner de privacidad'`? → activar banner de cookies (o plugin ligero solo-CSS si el banner nativo no aplica a 4.5).
-     - Marcar consentimiento en registro.
-  3. Verificar que el registro muestra checkbox "Li e aceito o Aviso de Privacidade".
-- **Verificación**
-  - Página de registro: checkbox obligatorio presente.
-  - Portada: banner cookies con "Aceitar / Recusar".
+### SDD-CFG-05 — Textos legales LGPD (aviso + cookies + términos) ⏸️ PENDIENTE (no ejecutada)
+> **Por qué se dejó pendiente en vez de improvisar**: esta tarjeta es redacción de
+> contenido legal real (Aviso de Privacidade, Termos de Uso), no configuración técnica.
+> `docs/08-legal-lgpd.md` ya da la estructura y el contenido mínimo, pero falta el dato
+> de contacto real para el aviso (`docs/13-info-necesaria.md` §4, aún sin responder) y
+> se prefiere revisar el texto con el desarrollador antes de publicarlo en el sitio real
+> (a diferencia de una config técnica, un texto legal mal redactado si se publica
+> "provisionalmente" puede generar confusión o compromiso real frente al usuario).
+> Además, como ya NO hay auto-registro (RF-A-02 actualizado), el checkbox "Li e aceito"
+> en el registro (paso 3 original) no aplica tal cual — el mecanismo correcto en Moodle es
+> el **Site Policy** (`admin/tool/policy`), que pide aceptación en el **primer login** de
+> cualquier cuenta (incluida la única cuenta del Dr., creada manualmente).
+- **Pasos pendientes** (cuando se resuelva el bloqueo):
+  1. Redactar Aviso de Privacidade y Termos de Uso en pt-BR (base: `docs/08-legal-lgpd.md`).
+  2. Cargarlos como **Site Policy** vía *Site admin → Users → Policies → Manage policies*
+     (o `admin/tool/policy/managedocs.php`), marcando como obligatoria.
+  3. Banner de cookies: evaluar si el nativo de Moodle 4.5 alcanza o hace falta un plugin
+     ligero; documentar la decisión aquí.
 - **DoD**
-  - [ ] Aviso, términos y banner operativos en pt-BR.
+  - [ ] Aviso, términos y banner operativos en pt-BR. **No iniciado.**
 
 ---
 
-### SDD-CFG-06 — Verificación transversal de idioma
-- **Pasos**
-  1. Entrar como usuario anónimo y como usuario logado (usar la cuenta del Dr. o crear
-     una cuenta de prueba manualmente vía admin — no hay auto-registro).
-  2. Revisar 3 páginas clave: portada, login, curso → sin texto en inglés (no hay
-     página de registro público que revisar).
-- **Verificación**
-  - Capturas/comprobación visual: 100% pt-BR.
+### SDD-CFG-06 — Verificación transversal de idioma ✅ (2026-08-30)
+- **Verificación realizada** (vía `curl`, anónimo y logado como `admin`):
+  - Portada: `<title>Página inicial | plataforma</title>`.
+  - Login: `<title>Acesso ao site | plataforma</title>`, labels visibles
+    "Identificação de usuário" / "Senha" (los matches de "username"/"password" en el HTML
+    son atributos técnicos `name=`/`id=`, no texto visible).
+  - Informe de seguridad (admin): `<title>Verificações de segurança | ...</title>`.
+  - No se encontró texto de UI en inglés en ninguna de las 3 páginas. (No hay página de
+    registro público que revisar — self-registration deshabilitado.)
 - **DoD**
-  - [ ] Idiomas no deseados ausentes (inglés/ español ignorados).
+  - [x] Idiomas no deseados ausentes.

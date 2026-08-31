@@ -11,7 +11,10 @@
 ## 2. Credenciales y acceso (no versionar)
 - [x] Acceso al hosting: SSH por llave (`matiasf6@sh006.hostgator.net`), sin necesidad de cPanel UI (se usó `uapi` por SSH para todo lo que normalmente requeriría el panel).
 - [x] Datos de BD: creada `matiasf6_moodle_db` / `matiasf6_moodle_user`, clave en `.env.secrets` (no versionado).
-- [ ] Correo del administrador real del Dr. (para `--adminemail`) — se usó temporalmente `dev@somoscdv.com` (del desarrollador) para no bloquear la instalación; cambiar cuando el Dr. confirme el suyo.
+- [x] Correo del administrador: `dev@somoscdv.com` (del desarrollador) es correcto y
+  **permanente** — según el modelo de roles (`docs/02-autenticacion.md`), el admin del
+  sitio es el desarrollador, no el Dr. El Dr. tiene su **propia cuenta separada**
+  (`dr_jcabello`, `jmcabello_merida@hotmail.com`, rol `user`), creada 2026-08-30.
 - [ ] Acceso al **canal de YouTube del Dr.** (subir videos no listados).
 - [ ] Acceso al **Dropbox del Dr.** (estructura de carpetas).
 
