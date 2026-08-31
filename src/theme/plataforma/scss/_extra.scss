@@ -379,6 +379,26 @@ body.pagelayout-login {
 }
 
 // ---------------------------------------------------------------------------
+// Título de página "NeuroIsbe" en la Página Principal (encabezado plano de
+// Moodle, <h1 class="h2 mb-0"> dentro de .page-header-headings — sin relación
+// con el .hero-title de abajo, que ya tenía degradado). Pedido: mismo degradado
+// azul→blanco. OJO: este título va sobre fondo BLANCO (la tarjeta de
+// contenido), no oscuro como el hero — un degradado que termine en blanco
+// puro se volvería ilegible ahí (texto blanco sobre fondo blanco). Se usa un
+// azul saturado que aclara hacia un celeste casi blanco, sin llegar a
+// desaparecer. Escopado a pagelayout-frontpage para no afectar el título de
+// ninguna otra página del sitio (todas comparten esta misma clase de Moodle).
+// ---------------------------------------------------------------------------
+body.pagelayout-frontpage .page-header-headings h1 {
+    display: inline-block;
+    background: linear-gradient(90deg, $blue-deep 0%, $sky 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+// ---------------------------------------------------------------------------
 // Hero de la portada.
 // ---------------------------------------------------------------------------
 .hero {
