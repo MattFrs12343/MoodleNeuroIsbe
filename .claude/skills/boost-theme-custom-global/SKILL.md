@@ -78,6 +78,70 @@ servido real** (no el propio) contra cada contenedor de la cadena DOM (`#page` �
 `background`/`background-color`/`background-image` que Boost declare y uno no haya
 neutralizado explícitamente (`background: transparent !important` si hace falta).
 
+## ⚠️ Cuando razonar sobre CSS estático no alcanza: Chrome headless + CDP crudo
+Si la extensión de Chrome no conecta (pasa siempre en este entorno) y ya van 2-3 rondas
+de "arreglé esto pero se sigue viendo mal" sin confirmación visual, **dejar de razonar
+sobre el CSS servido a ciegas** y conseguir evidencia real de navegador:
+```powershell
+# Captura real (no necesita la extensión de Chrome ni Puppeteer):
+& "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu `
+  --no-sandbox --window-size=1440,1000 --screenshot="$env:TEMP\shot.png" `
+  --virtual-time-budget=4000 "https://sitio.real/pagina"
+```
+Para medir DOM/CSS con precisión (ancho real, qué regla está ganando, etc.), usar el
+Chrome DevTools Protocol directo desde Node 22+ (tiene `fetch`/`WebSocket` nativos, no
+hace falta instalar Puppeteer):
+1. `chrome.exe --headless=new --remote-debugging-port=9333 --user-data-dir=<tmp>`
+2. `PUT http://localhost:9333/json/new?<url>` → da `webSocketDebuggerUrl`.
+3. Conectar por `WebSocket`, `Page.enable` + esperar `Page.loadEventFired`, esperar
+   ~2s más (para que corran los módulos AMD tipo `core/togglesensitive`).
+4. `Runtime.evaluate` con `getBoundingClientRect()`/`getComputedStyle()` para medir de
+   verdad (no asumir), o `DOM.querySelector` + `CSS.getMatchedStylesForNode` para listar
+   **todas** las reglas CSS que compiten por una propiedad — esto encontró en minutos una
+   regla vieja de compatibilidad YUI (`input[type="text"]{width:12.25em}`, más específica
+   que `.form-control{width:100%}` de Bootstrap) que 3 rondas de inspección manual del
+   CSS servido no habían detectado. Bug real 2026-08-31: dos inputs del login con el
+   mismo `.form-control-lg` medían 196px vs 328px porque esa regla vieja le ganaba a
+   Bootstrap en uno de los dos (el otro escapaba por tener un wrapper con más
+   especificidad, por casualidad, no por diseño). Corregido con `width:100%!important`
+   explícito. Moraleja: medir con `getBoundingClientRect` en vez de comparar HTML/CSS a
+   ojo ahorra rondas enteras de intentos fallidos.
+
+## 🔧 Cuando la extensión de Chrome no conecta: Chrome headless local + CDP crudo
+Si tras 2-3 rondas de fixes "a ciegas" (razonando sobre el CSS servido, sin ver el
+renderizado real) el desarrollador sigue reportando el mismo problema visual, **dejar de
+adivinar y medir de verdad**. En Windows con Chrome instalado, no hace falta la extensión:
+```powershell
+# Captura de pantalla real de la página (sirve para ver de un vistazo si algo cambió).
+& "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu `
+  --no-sandbox --window-size=1440,1000 --screenshot="$env:TEMP\shot.png" `
+  --virtual-time-budget=4000 "https://el-sitio/pagina.php"
+```
+Para medir DOM/CSS con precisión (`getBoundingClientRect`, `getComputedStyle`,
+`CSS.getMatchedStylesForNode` para ver **todas** las reglas que compiten por una
+propiedad, en orden y con su especificidad) — Node 22+ trae `fetch`/`WebSocket` nativos,
+no hace falta instalar Puppeteer:
+```powershell
+& "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new --disable-gpu `
+  --remote-debugging-port=9333 --window-size=1440,1000 `
+  --user-data-dir="$env:TEMP\chrome-profile" -WindowStyle Hidden
+```
+```js
+// medir.mjs — abrir tab, esperar load + tiempo para JS async (AMD/togglesensitive/etc.),
+// y correr cualquier expresión JS vía Runtime.evaluate.
+const targ = await (await fetch("http://localhost:9333/json/new?URL", {method:"PUT"})).json();
+const ws = new WebSocket(targ.webSocketDebuggerUrl);
+// ... Page.enable, esperar Page.loadEventFired, setTimeout ~2500ms, Runtime.evaluate
+```
+Caso real donde esto fue decisivo (2026-08-31, "el input de usuario sigue sin el mismo
+tamaño que el de senha", 3 intentos fallidos razonando el CSS a ciegas): medir con
+`getBoundingClientRect()` reveló que un input medía 196px y el otro 328px con el MISMO
+contenedor padre — y `CSS.getMatchedStylesForNode` mostró la causa real en segundos: una
+regla vieja de Moodle (`input[type="text"]{width:12.25em}`, rastro de compatibilidad YUI)
+con más especificidad que `.form-control{width:100%}` de Bootstrap, ganando en un campo
+sí y en el otro no según qué otro selector competía. Sin esta técnica, se podría haber
+seguido iterando CSS a ciegas indefinidamente.
+
 ## ⚠️ Logo/favicon vía Site admin están rotos en esta versión (Moodle 4.5.13)
 `Site admin → Appearance → Logos` genera URLs que **siempre dan 404**:
 `moodle_url::make_pluginfile_url()` concatena la revisión del tema con el nombre de

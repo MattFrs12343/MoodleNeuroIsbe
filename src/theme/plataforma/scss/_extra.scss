@@ -262,7 +262,22 @@ body.pagelayout-login {
         max-height: 50px;
         margin: 0 auto 1.4rem;
     }
+    // CAUSA REAL encontrada con DevTools real (Chrome headless + CDP, midiendo
+    // getBoundingClientRect y CSS.getMatchedStylesForNode porque la extensión de
+    // Chrome no está disponible): Moodle trae una regla vieja de compatibilidad
+    // (`input[type="text"], input[type="password"], textarea { width: 12.25em; }`,
+    // rastro de YUI — de ahí las clases `yui-skin-sam` en el <body>) con MÁS
+    // especificidad que `.form-control{width:100%}` de Bootstrap (selector de
+    // atributo = misma especificidad que una clase, pero sumado al elemento le
+    // gana). El campo de contraseña "escapaba" porque el fix anterior
+    // (`.toggle-sensitive-wrapper.input-group > .form-control-lg`) tenía
+    // especificidad de sobra para ganarle también a esa regla vieja — pero el de
+    // usuario, sin ese wrapper, se quedaba angosto (~196px en vez del 100% real,
+    // ~328px en este layout). Medido con precisión de píxel: username=196px,
+    // password=328px, mismo contenedor padre. Se corrige con `width:100%!important`
+    // explícito en AMBOS campos del login.
     .form-control-lg {
+        width: 100% !important;
         border-radius: .7rem;
         border: 1px solid rgba($navy, .15);
         padding: .7rem 1rem;
