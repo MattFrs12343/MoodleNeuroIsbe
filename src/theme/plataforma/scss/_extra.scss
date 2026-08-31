@@ -204,6 +204,19 @@ body.pagelayout-login {
         display: block;
     }
     // Todo el contenido del login por encima del canvas.
+    // BUG REAL encontrado en autopsia: Boost trae su propio fondo opaco para esta
+    // página (theme/boost/scss/moodle/core.scss): `.pagelayout-login #page{
+    // background:#f8f9fa; background-image:linear-gradient(...)}` — como nunca
+    // declarábamos `background` en nuestro propio `#page`, esa regla de Boost
+    // quedaba sin competencia y tapaba TODO (el navy del body y el canvas de
+    // constelaciones, que quedan detrás, ocultos). Se limpia explícitamente en
+    // toda la cadena de contenedores hasta la tarjeta blanca del login.
+    #page,
+    #page-content,
+    #region-main-box,
+    #region-main {
+        background: transparent !important;
+    }
     #page {
         position: relative;
         z-index: 1;

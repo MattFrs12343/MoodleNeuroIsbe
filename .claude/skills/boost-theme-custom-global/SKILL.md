@@ -62,6 +62,22 @@ reflejan, **no perder tiempo peleando la cascada de `!default`**: escribir los o
 directo sobre la clase ya renderizada en `_extra.scss` (`.btn-primary { background-color:
 $teal-deep !important; }`, etc.) — funciona siempre, es el patrón ya usado en este tema.
 
+## ⚠️ Boost puede "ganar por default" en propiedades que nunca tocaste
+No alcanza con verificar que las clases PROPIAS aparecen en el CSS servido — hay que
+revisar si una regla de **Boost** sobre el mismo selector puede estar aplicando una
+propiedad que nuestro código nunca declaró. Caso real (login con fondo de
+"constelaciones", 2026-08-31): se puso un fondo navy en `body.pagelayout-login` y un
+`<canvas>` detrás (`z-index:0`), con `#page` encima (`z-index:1`) sólo para posicionar
+(`position/display/align-items/…`) — **sin declarar `background`**. Boost trae su propia
+regla `.pagelayout-login #page{background:#f8f9fa; background-image:linear-gradient(...)}`
+(gris claro), y como nadie competía por esa propiedad, ganaba sin pelea y tapaba TODO
+(el navy del body y el canvas, ambos por detrás). El síntoma reportado fue vago ("se ve
+mal"), no un error de compilación — antes de rediseñar de nuevo, comparar el **CSS
+servido real** (no el propio) contra cada contenedor de la cadena DOM (`#page` →
+`#page-content` → `#region-main-box` → `#region-main` → contenido), buscando
+`background`/`background-color`/`background-image` que Boost declare y uno no haya
+neutralizado explícitamente (`background: transparent !important` si hace falta).
+
 ## ⚠️ Logo/favicon vía Site admin están rotos en esta versión (Moodle 4.5.13)
 `Site admin → Appearance → Logos` genera URLs que **siempre dan 404**:
 `moodle_url::make_pluginfile_url()` concatena la revisión del tema con el nombre de
