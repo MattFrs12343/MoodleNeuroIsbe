@@ -77,10 +77,30 @@
   variables SCSS (`$primary`, `$font-family-sans-serif`, etc.) se propaguen correctamente
   a través de `theme/boost/scss/preset/default.scss` — más robusto y más fácil de
   verificar con `curl` sin depender de la cascada de `!default`.
+- **Tercera pasada, mismo día**: el desarrollador entró al sitio y reportó dos problemas
+  concretos además de pedir un look más moderno: (1) **el logo ocupaba demasiado espacio**
+  y (2) **la página de login se veía "deforme"**. Causa real de ambos: el `<img
+  id="logoimage">` que genera Moodle trae la clase Bootstrap `img-fluid`
+  (`width:100%` del contenedor, `height:auto`), y como el logo fuente es un PNG
+  **cuadrado** de 1254×1254px, se estiraba al ancho completo del contenedor —
+  literalmente cientos de píxeles de alto encima del formulario. Corregido con un tope
+  explícito (`max-height: 40px` en navbar, `52px` en login) en `.navbar-brand img` y
+  `#logoimage`. Aprovechando el arreglo, se rediseñó el login completo: card centrada con
+  sombra y borde superior de acento, inputs con foco en el color de marca, botón de
+  envío a todo el ancho, y un **patrón SVG propio** ("sinapse": nodos + líneas, mismo
+  lenguaje visual que `.synapse-rule`) como textura de fondo muy sutil — se optó por SVG
+  hecho a mano (data-URI, sin dependencias externas) en vez de generar una imagen rasterizada
+  nueva, porque es nítido a cualquier resolución y no agrega peso. También se modernizó el
+  navbar (efecto "glass" con `backdrop-filter: blur`), los botones primarios (forma
+  píldora, sombra de profundidad, micro-elevación al hover) y se agregó una entrada sutil
+  del hero (`@keyframes hero-rise`, respeta `prefers-reduced-motion`).
 - **Verificación**
-  - Script de compilación aislado (sin silenciar excepciones) confirma `to_css()` sin error.
+  - Script de compilación aislado (sin silenciar excepciones) confirma `to_css()` sin error
+    en cada una de las tres pasadas (aprendida la lección: verificar esto ANTES de tocar
+    producción, no después de que "algo se ve raro").
   - CSS servido por HTTP real contiene `#0F6C61` en `.btn-primary`, "Plex" y "Grotesk"
-    en las declaraciones de `font-family`.
+    en las declaraciones de `font-family`, y (tercera pasada) `login-container`,
+    `logoimage`, `backdrop-filter`, `hero-rise`.
   - `<title>` de la portada: `NeuroIsbe` (antes `plataforma`).
   - **Falta confirmación visual** (Playwright/captura): la extensión de Chrome no se
     conectó en ningún intento durante esta sesión. Recomendado al desarrollador: hacer

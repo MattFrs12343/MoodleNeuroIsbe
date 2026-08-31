@@ -17,10 +17,26 @@
 // !important donde Bootstrap ya trae su propio !important o especificidad mayor).
 // Ver docs/CHANGELOG.md 2026-08-31 para el detalle de la investigación.
 
+// Patrón "sinapse" en SVG puro (nodos + líneas), muy sutil — misma firma visual del
+// .synapse-rule, usada como textura de fondo en vez de decoración aislada.
+// El color va hardcodeado a %232BC7B4 (= $teal-spark, #2BC7B4 percent-encoded) porque
+// va dentro de un data-URI, no se puede interpolar la variable SCSS con seguridad ahí.
+$synapse-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%232BC7B4' stroke-width='1'%3E%3Cline x1='20' y1='24' x2='72' y2='54' opacity='.35'/%3E%3Cline x1='72' y1='54' x2='42' y2='112' opacity='.3'/%3E%3Cline x1='72' y1='54' x2='128' y2='34' opacity='.35'/%3E%3Cline x1='42' y1='112' x2='98' y2='140' opacity='.25'/%3E%3Cline x1='128' y1='34' x2='148' y2='92' opacity='.3'/%3E%3C/g%3E%3Cg fill='%232BC7B4'%3E%3Ccircle cx='20' cy='24' r='2.6' opacity='.55'/%3E%3Ccircle cx='72' cy='54' r='3' opacity='.65'/%3E%3Ccircle cx='42' cy='112' r='2.6' opacity='.5'/%3E%3Ccircle cx='128' cy='34' r='2.6' opacity='.55'/%3E%3Ccircle cx='98' cy='140' r='2.4' opacity='.45'/%3E%3Ccircle cx='148' cy='92' r='2.2' opacity='.45'/%3E%3C/g%3E%3C/svg%3E");
+
 body {
     font-family: $font-family-sans-serif !important;
     background-color: $bone !important;
     color: $ink;
+}
+
+// El logo (PNG cuadrado de alta resolución) viene con clase Bootstrap `img-fluid`
+// (width:100% del contenedor) — sin tope se estira gigante. Se limita en todos lados
+// donde aparece (navbar y portada de login).
+.navbar-brand img,
+#logoimage {
+    max-height: 40px;
+    width: auto;
+    object-fit: contain;
 }
 
 h1, h2, h3, h4, .hero-title, .navbar-brand {
@@ -34,19 +50,38 @@ a:hover { color: $teal-spark; }
 .btn-primary {
     background-color: $teal-deep !important;
     border-color: $teal-deep !important;
+    border-radius: 2rem !important;
+    padding: .55rem 1.5rem !important;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba($teal-deep, .28);
+    transition: transform .15s ease, box-shadow .15s ease;
 
     &:hover, &:focus, &:active {
         background-color: darken($teal-deep, 8%) !important;
         border-color: darken($teal-deep, 8%) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 10px 24px rgba($teal-deep, .35);
     }
 }
 .btn-outline-primary {
     color: $teal-deep !important;
     border-color: $teal-deep !important;
+    border-radius: 2rem !important;
 
     &:hover {
         background-color: $teal-deep !important;
         border-color: $teal-deep !important;
+    }
+}
+.btn-secondary {
+    background-color: transparent;
+    border-color: rgba($ink, .25);
+    color: $ink;
+
+    &:hover {
+        background-color: rgba($ink, .06);
+        border-color: rgba($ink, .4);
+        color: $ink;
     }
 }
 .text-primary { color: $teal-deep !important; }
@@ -66,7 +101,9 @@ a:hover { color: $teal-spark; }
 // Navbar — reskin oscuro (por defecto boost la deja blanca/"navbar-light").
 // ---------------------------------------------------------------------------
 .navbar.navbar-light {
-    background-color: $ink !important;
+    background-color: rgba($ink, .92) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 1px 0 rgba(255, 255, 255, .06);
 
     .navbar-brand, .nav-link, .aabtn {
@@ -77,6 +114,63 @@ a:hover { color: $teal-spark; }
     }
     .navbar-toggler-icon {
         filter: invert(1);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Login — rediseño completo (antes: logo gigante sin tope + card por defecto).
+// ---------------------------------------------------------------------------
+body.pagelayout-login {
+    background-color: $bone;
+    background-image: $synapse-bg;
+    background-repeat: repeat;
+    background-size: 160px 160px;
+
+    #page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 90vh;
+    }
+    .login-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    .login-container {
+        width: 100%;
+        max-width: 26rem;
+        background: #fff;
+        padding: 2.5rem 2.25rem 2rem;
+        border-radius: 1.25rem;
+        border-top: 4px solid $teal-spark;
+        box-shadow: 0 24px 48px rgba($ink, .14);
+    }
+    #logoimage {
+        display: block;
+        max-height: 52px;
+        margin: 0 auto 1.4rem;
+    }
+    .form-control-lg {
+        border-radius: .7rem;
+        border-color: rgba($ink, .15);
+        padding: .7rem 1rem;
+
+        &:focus {
+            border-color: $teal-spark;
+            box-shadow: 0 0 0 .2rem rgba($teal-spark, .25);
+        }
+    }
+    .login-form-submit .btn {
+        width: 100%;
+    }
+    .login-divider {
+        margin: 1.25rem 0;
+        border-top: 1px solid rgba($ink, .08);
+    }
+    #page-footer.bg-white {
+        background-color: transparent !important;
+        box-shadow: none;
     }
 }
 
@@ -92,9 +186,11 @@ a:hover { color: $teal-spark; }
     text-align: left;
     color: $bone;
     overflow: hidden;
+    border-radius: 0 0 1.5rem 1.5rem;
     background:
         linear-gradient(100deg, $ink 0%, rgba($ink, .82) 40%, rgba($teal-deep, .35) 100%),
         url([[pix:theme|hero-bg]]) center right / cover no-repeat;
+    animation: hero-rise .5s ease both;
 
     .hero-inner {
         max-width: 34rem;
@@ -135,6 +231,15 @@ a:hover { color: $teal-spark; }
         .hero-inner { max-width: 100%; }
         .hero-subtitle { margin-left: auto; margin-right: auto; }
     }
+}
+
+@keyframes hero-rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero { animation: none; }
 }
 
 // ---------------------------------------------------------------------------
