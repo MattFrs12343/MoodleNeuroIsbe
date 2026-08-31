@@ -8,7 +8,7 @@
 | Variable | Valor | Estado |
 |---|---|---|
 | `DOMINIO` | `portal.examenes-neuro.com` | Confirmado 2026-08-30 |
-| `NOMBRE_PLATAFORMA` | `Plataforma Educativa` (visible al usuario: definir en pt-BR) | Confirmar con cliente |
+| `NOMBRE_PLATAFORMA` | **`NeuroIsbe — Portal de Estudos`** — resuelto 2026-08-31 (curso frontpage `fullname`; `shortname=NeuroIsbe`) | Confirmado |
 | `SHORTNAME_SITIO` | `plataforma` | Fijo |
 | `ZONA_HORARIA` | `America/Sao_Paulo` (audiencia brasileña) | Fijo |
 

@@ -6,7 +6,7 @@
 ## 1. Identidad y dominio
 - [x] **Dominio real** del sitio: `portal.examenes-neuro.com` (respondido 2026-08-30, volcado en `specs/00-variables-fijas.md`).
 - [x] ¿El hosting ya tiene el subdominio apuntado e SSL? Sí, ambos ya estaban listos (SSL Let's Encrypt válido).
-- [ ] **Nombre visible de la plataforma** en pt-BR (ej. "Portal de Estudos do Dr. Fulano"). Se usó temporalmente "Plataforma de Estudos" para no bloquear la instalación (Fase 1) — cambiar cuando el Dr. confirme el nombre final (campo trivial de editar en Moodle).
+- [x] **Nombre visible de la plataforma**: **"NeuroIsbe — Portal de Estudos"** (resuelto 2026-08-31, coincide con el subdominio `neuroisbe.examenes-neuro.com` ya existente en la cuenta — es una marca establecida del cliente, no un nombre inventado).
 
 ## 2. Credenciales y acceso (no versionar)
 - [x] Acceso al hosting: SSH por llave (`matiasf6@sh006.hostgator.net`), sin necesidad de cPanel UI (se usó `uapi` por SSH para todo lo que normalmente requeriría el panel).

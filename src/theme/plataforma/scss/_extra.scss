@@ -1,30 +1,145 @@
-// Componentes del tema plataforma.
+// Componentes del tema plataforma — identidad visual NeuroIsbe.
+// Firma: un hilo teal fino ("sinapse") que conecta encabezados y estados hover,
+// eco discreto del mapa de nodos del logo. El resto del sistema se mantiene
+// disciplinado a propósito (ver frontend-design skill: gastar el riesgo en un
+// solo lugar).
+
+// NOTA: en esta instalación las variables Bootstrap ($primary, $font-family-*, etc.)
+// declaradas en presets.scss no se propagan de forma fiable a través de
+// theme/boost/scss/preset/default.scss al pasar por el pipeline de compilación real
+// de Moodle (theme_config::get_css_content_from_scss() / core_scss::to_css()) — se
+// probó exhaustivamente (dump directo del SCSS crudo, compilación aislada,
+// inspección de core_scss) y el valor por defecto de boost siempre gana pese al
+// !default de Sass funcionar como se espera en teoría. En vez de seguir
+// investigando esa causa (posible particularidad del compilador scssphp incluido
+// en esta versión), se aplican los estilos DIRECTO sobre las clases ya renderizadas
+// por Bootstrap/boost, con la misma especificidad + orden de aparición (y
+// !important donde Bootstrap ya trae su propio !important o especificidad mayor).
+// Ver docs/CHANGELOG.md 2026-08-31 para el detalle de la investigación.
 
 body {
-    font-family: $font-family;
+    font-family: $font-family-sans-serif !important;
+    background-color: $bone !important;
+    color: $ink;
 }
 
-// Hero de la portada.
-.hero {
-    background:
-        linear-gradient(90deg, rgba(16, 42, 67, .90) 0%, rgba(21, 101, 192, .55) 45%, rgba(21, 101, 192, .15) 100%),
-        url([[pix:theme|hero-bg]]) center right / cover no-repeat;
-    color: $light;
-    padding: 3rem 1.5rem;
-    text-align: center;
+h1, h2, h3, h4, .hero-title, .navbar-brand {
+    font-family: $font-family-display !important;
+    letter-spacing: -.01em;
+}
 
+a { color: $teal-deep; }
+a:hover { color: $teal-spark; }
+
+.btn-primary {
+    background-color: $teal-deep !important;
+    border-color: $teal-deep !important;
+
+    &:hover, &:focus, &:active {
+        background-color: darken($teal-deep, 8%) !important;
+        border-color: darken($teal-deep, 8%) !important;
+    }
+}
+.btn-outline-primary {
+    color: $teal-deep !important;
+    border-color: $teal-deep !important;
+
+    &:hover {
+        background-color: $teal-deep !important;
+        border-color: $teal-deep !important;
+    }
+}
+.text-primary { color: $teal-deep !important; }
+.bg-primary   { background-color: $teal-deep !important; }
+
+// Hilo "sinapse": subrayado de acento bajo títulos de sección.
+.synapse-rule {
+    display: block;
+    width: 3.5rem;
+    height: 3px;
+    margin: .6rem 0 1.25rem;
+    border-radius: 2px;
+    background: linear-gradient(90deg, $teal-spark, rgba($teal-spark, 0));
+}
+
+// ---------------------------------------------------------------------------
+// Navbar — reskin oscuro (por defecto boost la deja blanca/"navbar-light").
+// ---------------------------------------------------------------------------
+.navbar.navbar-light {
+    background-color: $ink !important;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .06);
+
+    .navbar-brand, .nav-link, .aabtn {
+        color: rgba(255, 255, 255, .88) !important;
+    }
+    .nav-link:hover, .aabtn:hover, .navbar-brand:hover {
+        color: $teal-spark !important;
+    }
+    .navbar-toggler-icon {
+        filter: invert(1);
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Hero de la portada.
+// ---------------------------------------------------------------------------
+.hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 22rem;
+    padding: 3rem 2rem;
+    text-align: left;
+    color: $bone;
+    overflow: hidden;
+    background:
+        linear-gradient(100deg, $ink 0%, rgba($ink, .82) 40%, rgba($teal-deep, .35) 100%),
+        url([[pix:theme|hero-bg]]) center right / cover no-repeat;
+
+    .hero-inner {
+        max-width: 34rem;
+    }
+    .hero-eyebrow {
+        font-family: $font-family-monospace;
+        font-size: .8rem;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: $teal-spark;
+    }
     .hero-title {
-        font-size: 2.2rem;
-        margin-bottom: .5rem;
+        font-size: clamp(1.9rem, calc(1rem + 3vw), 2.75rem);
+        font-weight: 600;
+        margin: .35rem 0 .5rem;
     }
     .hero-subtitle {
-        font-size: 1.1rem;
-        opacity: .9;
+        font-size: 1.05rem;
+        color: rgba($bone, .82);
         margin-bottom: 1.5rem;
+        max-width: 30rem;
+    }
+    .btn-primary {
+        background-color: $teal-spark;
+        border-color: $teal-spark;
+        color: $ink;
+        font-weight: 600;
+
+        &:hover {
+            background-color: darken($teal-spark, 8%);
+            border-color: darken($teal-spark, 8%);
+        }
+    }
+
+    @media (max-width: 767px) {
+        text-align: center;
+        justify-content: center;
+        .hero-inner { max-width: 100%; }
+        .hero-subtitle { margin-left: auto; margin-right: auto; }
     }
 }
 
-// Grilla de módulos (tarjetas).
+// ---------------------------------------------------------------------------
+// Grilla y tarjetas de módulos.
+// ---------------------------------------------------------------------------
 .modulos-grid {
     display: grid;
     gap: 1.25rem;
@@ -40,13 +155,18 @@ body {
 }
 
 .modulo-card {
+    position: relative;
+    background: #fff;
     border-radius: $card-radius;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
-    transition: transform .15s ease;
+    box-shadow: 0 2px 10px rgba($ink, .08);
+    border-top: 3px solid transparent;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 
     &:hover {
-        transform: translateY(-3px);
+        transform: translateY(-4px);
+        box-shadow: 0 10px 24px rgba($ink, .14);
+        border-top-color: $teal-spark;
     }
 
     .modulo-card-img {
@@ -55,24 +175,45 @@ body {
         object-fit: cover;
     }
     .modulo-card-body {
-        padding: 1rem;
+        padding: 1.1rem 1.15rem 1.25rem;
+    }
+    .modulo-card-tag {
+        display: inline-block;
+        font-family: $font-family-monospace;
+        font-size: .72rem;
+        letter-spacing: .08em;
+        color: $teal-deep;
+        background: rgba($teal-deep, .1);
+        padding: .15rem .5rem;
+        border-radius: .3rem;
+        margin-bottom: .5rem;
     }
     .modulo-card-title {
         margin: 0 0 .35rem;
-        font-size: 1.15rem;
+        font-family: $font-family-display;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: $ink;
     }
     .modulo-card-summary {
         margin: 0 0 .75rem;
-        opacity: .8;
-        font-size: .95rem;
+        color: $slate;
+        font-size: .93rem;
+    }
+    .btn {
+        border-radius: .5rem;
     }
 }
 
+// ---------------------------------------------------------------------------
 // Reproductor de video responsive 16:9.
+// ---------------------------------------------------------------------------
 .embed-video {
     position: relative;
     width: 100%;
     padding-top: 56.25%;
+    border-radius: $card-radius;
+    overflow: hidden;
 
     iframe {
         position: absolute;
@@ -82,4 +223,33 @@ body {
         height: 100%;
         border: 0;
     }
+}
+
+// ---------------------------------------------------------------------------
+// Footer.
+// ---------------------------------------------------------------------------
+#page-footer {
+    background: $ink;
+    color: rgba($bone, .75);
+
+    a {
+        color: rgba($bone, .9);
+        &:hover { color: $teal-spark; }
+    }
+}
+
+.plataforma-footer {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    font-size: .85rem;
+
+    .plataforma-footer-links a {
+        margin: 0 .5rem;
+    }
+}
+
+// Estados de foco visibles (accesibilidad) con el acento de marca.
+a:focus-visible, button:focus-visible, .btn:focus-visible {
+    outline: 2px solid $teal-spark;
+    outline-offset: 2px;
 }

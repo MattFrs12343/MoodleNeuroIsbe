@@ -1,15 +1,30 @@
-// Presets del tema plataforma (child de boost).
-// Separar aquí paleta y tipografía para que _extra.scss solo aporte componentes.
+// Presets del tema plataforma (child de boost) — identidad NeuroIsbe.
+// Paleta extraída de la propia marca (logo: cabeza/cerebro en navy + teal),
+// no del azul por defecto de Bootstrap. Ver docs/06-portada-tema.md.
 
-$brand-success: #2e7d32;
-$brand-info:    #1565c0;
-$brand-warn:    #ef6c00;
-$brand-danger:  #c62828;
+$ink:         #0B1F33; // navy profundo — navbar, footer, texto principal
+$teal-deep:   #0F6C61; // acento primario (del logo)
+$teal-spark:  #2BC7B4; // acento vivo — hover, foco, "sinapsis"
+$bone:        #F6F4EF; // fondo general, cálido, no blanco puro
+$slate:       #55697C; // texto secundario / muted
+$amber:       #E8A33D; // detalle puntual, usar con moderación
 
-$primary:   #1565c0;
-$secondary: #f5f7fa;
-$dark:      #102a43;
-$light:     #ffffff;
+// Variables reales de Bootstrap/boost (deben ir antes del contenido principal
+// para que las reciban como override, patrón !default).
+$primary:     $teal-deep;
+$secondary:   $slate;
+$dark:        $ink;
+$light:       $bone;
+$body-bg:     $bone;
+$body-color:  $ink;
+$link-color:  $teal-deep;
+$link-hover-color: $teal-spark;
 
-$card-radius:  10px;
-$font-family:  "Segoe UI", system-ui, -apple-system, sans-serif;
+$border-radius:      .6rem;
+$border-radius-lg:   .9rem;
+$card-radius:        .9rem; // usado por _extra.scss (tarjetas de módulo)
+
+$font-family-sans-serif: "IBM Plex Sans", -apple-system, system-ui, sans-serif;
+$font-family-monospace:  "IBM Plex Mono", "SFMono-Regular", monospace;
+$font-family-display:    "Space Grotesk", $font-family-sans-serif;
+$font-family:             $font-family-sans-serif; // compat con _extra.scss existente

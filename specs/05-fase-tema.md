@@ -45,28 +45,52 @@
 
 ---
 
-### SDD-TEM-02 — estilos de la portada (cards + hero) ✅ (2026-08-31)
-- **Ejecutado**: `_extra.scss` ya traía `.hero`, `.modulos-grid`, `.modulo-card`,
-  `.embed-video` (16:9) desde el esqueleto original; lo que faltaba (y se agregó ahora)
-  fue el **fondo real del hero**, con las imágenes que pasó el desarrollador:
-  ```scss
-  .hero {
-      background:
-          linear-gradient(90deg, rgba(16,42,67,.90) 0%, rgba(21,101,192,.55) 45%, rgba(21,101,192,.15) 100%),
-          url([[pix:theme|hero-bg]]) center right / cover no-repeat;
-      color: $light;
-      ...
-  }
-  ```
-  El degradado queda como overlay para que el título/CTA (a la izquierda) sigan legibles
-  sobre la ilustración (a la derecha, en `pix/hero-bg.png`).
+### SDD-TEM-02 — estilos de la portada (cards + hero) ✅ (2026-08-31, con rediseño completo)
+- **Primera pasada** (fondo real del hero con `pix/hero-bg.png` + degradado overlay para
+  legibilidad del texto): hecha y verificada.
+- **Segunda pasada, el mismo día**: el desarrollador probó el sitio ("se ve mal") y pidió
+  una identidad visual propia, no solo colores por defecto de Bootstrap. Se aplicó un
+  sistema de diseño completo (se usó la skill `frontend-design` como guía):
+  - **Paleta** (extraída del propio logo, no del azul de Bootstrap): `$ink #0B1F33`
+    (navy — navbar/footer/texto), `$teal-deep #0F6C61` (acento primario), `$teal-spark
+    #2BC7B4` (hover/foco — "sinapse"), `$bone #F6F4EF` (fondo cálido), `$slate #55697C`
+    (texto secundario).
+  - **Tipografía**: Space Grotesk (títulos), IBM Plex Sans (cuerpo), IBM Plex Mono
+    (etiquetas — ej. "MOD 01" en las tarjetas). Cargadas vía Google Fonts en
+    `$CFG->additionalhtmlhead` (no vía `@import` en SCSS).
+  - **Firma visual**: un hilo teal degradado (`.synapse-rule`) bajo títulos de sección,
+    eco discreto del mapa de nodos del logo — único elemento "llamativo", el resto del
+    sistema deliberadamente contenido.
+  - Navbar reskin oscuro, tarjetas de módulo con etiqueta monoespaciada y borde superior
+    de acento al hover, footer oscuro con enlaces legales.
+  - Nombre del sitio actualizado a **"NeuroIsbe — Portal de Estudos"** (antes
+    "Plataforma de Estudos", placeholder) — resuelto `docs/13-info-necesaria.md` §1.
+- ⚠️ **Hallazgo crítico de esta sesión, documentado en la skill `boost-theme-custom-global`**:
+  Moodle **traga en silencio** cualquier error de compilación SCSS en producción
+  (`debug=0`) y sirve el CSS precompilado de boost de fábrica sin avisar — costó una
+  investigación larga (se llegó a sospechar un bug del pipeline de variables de Moodle)
+  antes de encontrar la causa real: una sola línea con unidades incompatibles en Sass
+  (`clamp(1.9rem, 3vw + 1rem, 2.75rem)` — Sass no puede sumar `vw` y `rem`). Corregido
+  envolviendo en `calc()`. Dado que este error es completamente silencioso, **de ahí en
+  adelante los overrides de clases Bootstrap (`.btn-primary`, `body`, `a`, navbar) se
+  escriben directo sobre las clases ya renderizadas** en vez de depender de que las
+  variables SCSS (`$primary`, `$font-family-sans-serif`, etc.) se propaguen correctamente
+  a través de `theme/boost/scss/preset/default.scss` — más robusto y más fácil de
+  verificar con `curl` sin depender de la cascada de `!default`.
 - **Verificación**
-  - `purge_caches.php` sin errores.
-  - CSS compilado confirmado con la regla `.hero` incluyendo la imagen real, y
-    `theme/image.php/.../hero-bg` responde `200`.
+  - Script de compilación aislado (sin silenciar excepciones) confirma `to_css()` sin error.
+  - CSS servido por HTTP real contiene `#0F6C61` en `.btn-primary`, "Plex" y "Grotesk"
+    en las declaraciones de `font-family`.
+  - `<title>` de la portada: `NeuroIsbe` (antes `plataforma`).
+  - **Falta confirmación visual** (Playwright/captura): la extensión de Chrome no se
+    conectó en ningún intento durante esta sesión. Recomendado al desarrollador: hacer
+    **hard refresh** (`Ctrl+Shift+R`) al revisar, porque el CSS se sirve con
+    `Cache-Control: immutable, max-age=90 días` y el navegador pudo haber cacheado la
+    versión fallida (CSS de boost sin estilos propios) de antes del fix.
 - **DoD**
-  - [x] Estilos SCSS compilables y aplicados (una vez corregido el bug de SDD-TEM-01, sin
-        el cual esta tarjeta nunca se habría reflejado en el sitio).
+  - [x] Estilos SCSS compilables y aplicados, verificado por `curl` (colores/fuentes reales
+        presentes en el CSS servido).
+  - [ ] Confirmación visual — pendiente, extensión de Chrome no disponible en esta sesión.
 
 ---
 
@@ -90,7 +114,7 @@
 
 ---
 
-### SDD-TEM-04 — Logo, favicon y footer 🟡 logo/favicon hechos, footer pendiente (2026-08-31)
+### SDD-TEM-04 — Logo, favicon y footer ✅ (2026-08-31)
 - **Imágenes recibidas del desarrollador** (carpeta `assets/`, 6 archivos): se identificaron
   por inspección visual (nombres genéricos `img1..6.png`, sin metadata). 2 de las 6
   (`img1`, `img2`) tenían el fondo transparente "quemado" como cuadrícula de ajedrez en
@@ -120,13 +144,16 @@
      oficial de Moodle vía `$THEME->rendererfactory`, ya declarado en `config.php`) que
      sobreescribe `get_logo_url()`/`get_compact_logo_url()` para servir directo desde
      `pix/logo.png` del tema.
-  3. Footer con enlaces a Aviso de Privacidade/Termos de Uso: **no ejecutado todavía**.
+  3. Footer con enlaces a Aviso de Privacidade/Termos de Uso: hecho vía
+     `$CFG->additionalhtmlfooter` (clase `.plataforma-footer`, ya estilada en `_extra.scss`),
+     enlaza a `admin/tool/policy/view.php?versionid=1` (Aviso) y `versionid=2` (Termos).
 - **Verificación**
   - `curl` a las URLs reales de favicon/logo/hero-bg (`theme/image.php/plataforma/...`)
     → `200` los tres.
+  - HTML de la portada contiene `plataforma-footer` y los dos enlaces legales.
   - Verificación visual con Playwright/captura: **pendiente** — la extensión de Chrome no
-    estaba conectada en el momento de esta tarjeta; queda para confirmar en una sesión
-    donde sí lo esté.
+    se conectó en ningún intento durante esta sesión; queda para confirmar apenas esté
+    disponible.
 - **DoD**
   - [x] Logo y favicon reales, visibles (verificado por `curl`, falta confirmación visual).
-  - [ ] Footer con enlaces legales — pendiente.
+  - [x] Footer con enlaces legales.
