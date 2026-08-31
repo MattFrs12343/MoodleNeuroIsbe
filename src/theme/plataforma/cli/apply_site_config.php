@@ -213,13 +213,19 @@ $footer = <<<HTML
 </script>
 <script>
 (function(){
-  // Red de seguridad para la portada PÚBLICA (sin sesión): el hero + "Como
-  // funciona" ya se compactaron por CSS para entrar sin scroll en pantallas
-  // normales, pero en una pantalla más baja de lo esperado (notebook chica,
-  // zoom del navegador, barra de tareas grande) todavía podría sobrar unos
-  // píxeles. Si después de cargar sigue sobrando, se reduce el contenido con
-  // un `transform: scale()` uniforme (mismo aspecto, todo un poco más chico)
-  // hasta que entre exacto — no recorta ni tapa nada.
+  // Red de seguridad para la portada PÚBLICA (sin sesión) EN ESCRITORIO: el
+  // hero + "Como funciona" ya se compactaron por CSS para entrar sin scroll
+  // en pantallas normales, pero en una pantalla más baja de lo esperado
+  // (notebook chica, zoom del navegador, barra de tareas grande) todavía
+  // podría sobrar unos píxeles. Si después de cargar sigue sobrando, se
+  // reduce el contenido con un `transform: scale()` uniforme (mismo aspecto,
+  // todo un poco más chico) hasta que entre exacto — no recorta ni tapa nada.
+  // SOLO en escritorio/tablet ancho (`innerWidth >= 768`): en celular el
+  // scroll vertical es un patrón normal y esperado (nadie espera que una
+  // página quepa entera sin deslizar el dedo), y el intento de compensar el
+  // ancho al escalar (`width: 100/scale%`) rompía el layout angosto —
+  // contenido cortado a la derecha, nada centrado. Más simple y más seguro:
+  // en mobile no se toca nada.
   var b = document.body;
   if (!b || b.className.indexOf('pagelayout-frontpage') === -1) { return; }
   if (b.className.indexOf('notloggedin') === -1) { return; }
@@ -229,7 +235,7 @@ $footer = <<<HTML
     if (!wrap) { return; }
     wrap.style.transform = 'none';
     wrap.style.height = 'auto';
-    wrap.style.width = '';
+    if (window.innerWidth < 768) { return; }
     // Se compara contra el scroll REAL del documento (no un cálculo propio de
     // "espacio disponible" por sección — algún contenedor padre puede tener su
     // propia altura fija en 100vh sin recortar overflow, lo que hace que medir
@@ -243,9 +249,6 @@ $footer = <<<HTML
       var scale = Math.max((wrapH - overflow) / wrapH, .7);
       wrap.style.transformOrigin = 'top center';
       wrap.style.transform = 'scale(' + scale + ')';
-      wrap.style.width = (100 / scale) + '%';
-      wrap.style.marginLeft = 'auto';
-      wrap.style.marginRight = 'auto';
       wrap.style.height = (wrapH * scale) + 'px';
     }
   }
