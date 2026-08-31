@@ -19,17 +19,24 @@
 
 ---
 
-### SDD-CFG-02 — Autenticación + auto-registro
+### SDD-CFG-02 — Autenticación SIN auto-registro (licencia de uso personal)
+> ⚠️ Licencia del curso confirmada como **uso personal, un solo usuario** (2026-08-30,
+> ver `docs/08-legal-lgpd.md` RF-L-08). Auto-registro público **queda deshabilitado**.
 - **Pasos** (UI: *Site admin → Plugins → Authentication*)
-  1. Activar `Manual accounts` (manual).
-  2. Activar *"Email-based self registration"* (email) y elegir reCAPTCHA.
-  3. En *Common settings → allowaccountssameemail = No*; `allowguestmaccess = 0`.
+  1. Activar únicamente `Manual accounts` (manual).
+  2. Confirmar que *"Email-based self registration"* está **deshabilitado** (`registerauth` vacío).
+  3. En *Common settings*: `allowguestmaccess = 0`.
+  4. Crear la **única cuenta de usuario** (el Dr.) manualmente: *Site admin → Users →
+     Add a new user*, con el email de `docs/13-info-necesaria.md` §1.
 - **Verificación**
-  - `SELECT value FROM mdl_config WHERE name='auth'` → incluye `email,manual`.
-  - `/login/index.php` muestra "Criar conta".
+  - `SELECT value FROM mdl_config WHERE name='registerauth'` → vacío (no `email`).
+  - `/login/signup.php` no permite alta pública (redirige o muestra error).
+  - `SELECT COUNT(*) FROM mdl_user WHERE deleted=0 AND id>2;` → `1` (solo el Dr., además
+    del admin y el usuario "guest" del sistema).
 - **DoD**
-  - [ ] Registro por email activo con captcha.
+  - [ ] Self-registration deshabilitado y verificado.
   - [ ] Guest deshabilitado.
+  - [ ] Cuenta única del Dr. creada manualmente.
 
 ---
 
@@ -76,8 +83,10 @@
 
 ### SDD-CFG-06 — Verificación transversal de idioma
 - **Pasos**
-  1. Entrar como usuario anónimo y como usuario logado (crear cuenta de prueba).
-  2. Revisar 4 páginas clave: portada, login, curso, registro → sin texto en inglés.
+  1. Entrar como usuario anónimo y como usuario logado (usar la cuenta del Dr. o crear
+     una cuenta de prueba manualmente vía admin — no hay auto-registro).
+  2. Revisar 3 páginas clave: portada, login, curso → sin texto en inglés (no hay
+     página de registro público que revisar).
 - **Verificación**
   - Capturas/comprobación visual: 100% pt-BR.
 - **DoD**

@@ -4,14 +4,14 @@
 > Tener todo esto evita bloqueos y reprocesos durante la implementación.
 
 ## 1. Identidad y dominio
-- [ ] **Dominio real** del sitio (ej. `portal.consultorio.com.br`) → reemplazar en `specs/00-variables-fijas.md`.
-- [ ] ¿El hosting ya tiene el subdominio apuntado e SSL?
-- [ ] **Nombre visible de la plataforma** en pt-BR (ej. "Portal de Estudos do Dr. Fulano").
+- [x] **Dominio real** del sitio: `portal.examenes-neuro.com` (respondido 2026-08-30, volcado en `specs/00-variables-fijas.md`).
+- [x] ¿El hosting ya tiene el subdominio apuntado e SSL? Sí, ambos ya estaban listos (SSL Let's Encrypt válido).
+- [ ] **Nombre visible de la plataforma** en pt-BR (ej. "Portal de Estudos do Dr. Fulano"). Se usó temporalmente "Plataforma de Estudos" para no bloquear la instalación (Fase 1) — cambiar cuando el Dr. confirme el nombre final (campo trivial de editar en Moodle).
 
 ## 2. Credenciales y acceso (no versionar)
-- [ ] Acceso cPanel (usuario/clave).
-- [ ] Datos de BD a crear (`moodle_db`, `moodle_user`, clave).
-- [ ] Correo del administrador (para `--adminemail`).
+- [x] Acceso al hosting: SSH por llave (`matiasf6@sh006.hostgator.net`), sin necesidad de cPanel UI (se usó `uapi` por SSH para todo lo que normalmente requeriría el panel).
+- [x] Datos de BD: creada `matiasf6_moodle_db` / `matiasf6_moodle_user`, clave en `.env.secrets` (no versionado).
+- [ ] Correo del administrador real del Dr. (para `--adminemail`) — se usó temporalmente `dev@somoscdv.com` (del desarrollador) para no bloquear la instalación; cambiar cuando el Dr. confirme el suyo.
 - [ ] Acceso al **canal de YouTube del Dr.** (subir videos no listados).
 - [ ] Acceso al **Dropbox del Dr.** (estructura de carpetas).
 
@@ -23,8 +23,8 @@
 - [ ] ¿Carpetas de Dropbox ya organizadas por módulo/unidad o hay que organizarlas?
 
 ## 4. Legal (bloqueante de acceso múltiple)
-- [ ] **Licencia del curso comprado**: ¿permite acceso a terceros o es solo uso personal del Dr.?
-  - Si es solo personal → la plataforma queda de uso del Dr. (1 cuenta principal).
+- [x] **Licencia del curso comprado**: uso **personal, un solo usuario** (respondido 2026-08-30).
+  → la plataforma queda de uso del Dr. (1 cuenta principal, sin auto-registro).
 - [ ] Datos de contacto para el aviso de privacidad (email de contacto).
 
 ## 5. Diseño / identidad visual
@@ -33,13 +33,15 @@
 - [ ] Frase de bienvenida del hero (pt-BR) y texto del pie (footer).
 
 ## 6. Técnico del hosting
-- [ ] ¿PHP 8.1+ activo y extensiones? (intl, zip, gd, mbstring, curl, soap, opcache)
-- [ ] ¿Se puede ubicar `moodledata/` FUERA de `public_html`? (en cPanel: carpeta en home)
-- [ ] ¿`upload_max_filesize` permite ≥256 MB? (por MP3)
-- [ ] ¿cPanel permite Cron Jobs?
+- [x] ¿PHP 8.1+ activo y extensiones? Sí — PHP 8.2 fijado para el subdominio, todas las extensiones necesarias presentes.
+- [x] ¿Se puede ubicar `moodledata/` FUERA de `public_html`? Sí — de hecho el docroot del subdominio ni siquiera está bajo `public_html/` (estructura propia por subdominio en esta cuenta).
+- [x] ¿`upload_max_filesize` permite ≥256 MB? Sí, 512 MB.
+- [x] ¿cPanel permite Cron Jobs? Sí, vía `crontab` de usuario por SSH (no vía `uapi`, ese módulo no está expuesto en esta cuenta).
 
 ## 7. Observaciones / decisiones menores aún abiertas
-- [ ] ¿Auto-registro abierto a cualquiera o solo invitación del admin? (opción "only invited" = disabled public signup)
+- [x] ¿Auto-registro abierto a cualquiera o solo invitación del admin? → **Ninguno**:
+  self-registration deshabilitado; el admin crea manualmente la única cuenta (el Dr.),
+  consecuencia directa de la licencia de uso personal (§4).
 - [ ] ¿Los usuarios necesitan ver "Mis cursos" en el menú o bastan las tarjetas de portada?
 - [ ] Zona horaria final.
 

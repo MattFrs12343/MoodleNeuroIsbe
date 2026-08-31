@@ -58,7 +58,7 @@ gestione y publica todo el contenido. Los usuarios solo **ven y navegan** el mat
 | ADR-1 | **Moodle no se modifica en el core** | Forkear el core rompe actualizaciones de seguridad. Se personaliza la capa de presentación (tema hijo) y se añaden plugins `local` / `mod` si se requieren. |
 | ADR-2 | **Módulo = Curso con secciones** | Estructura nativa de Moodle, sin desarrollo adicional: `SCHOOL`=Categoría, `MODULE`=Curso, `UNIT`=Sección. |
 | ADR-3 | **Videos: ver = embed (YouTube no listado), descargar = Dropbox** | Con +200 videos, evita 50–150 GB de disco y ancho de banda en hosting compartido (aunque sea propio). YouTube para reproducir; Dropbox (origen de los archivos del Dr.) para descargar. |
-| ADR-4 | **Autenticación nativa Moodle** (login + auto-registro simplificado) | Los usuarios necesitan login; no requiere SSO ni plugins de pago. |
+| ADR-4 | **Autenticación nativa Moodle, SIN auto-registro** — cuenta única creada por el admin | Licencia del curso confirmada como de **uso personal, un solo usuario** (2026-08-30). Auto-registro público violaría la licencia; no requiere SSO ni plugins de pago. |
 | ADR-5 | **MySQL/MariaDB como única BD** | Soporte nativo de Moodle, disponible en 100% de hostings compartidos. |
 | ADR-6 | **Idioma pt-BR como idioma base** | Se instala `pt_br` y se marca como único idioma activo. |
 | ADR-7 | **Solo un rol administrador + usuarios estándar** | No existe profesor; se minimiza la superficie de permisos. |

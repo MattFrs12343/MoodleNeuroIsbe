@@ -44,9 +44,9 @@ por el Dr.) respete derechos de autor y términos del contrato de compra.
 ### 4.2 Contenido con copyright (videos del curso comprado)
 - RF-L-07: **Restricción de distribución**: los videos NO se re-publican como públicos;
   solo usuarios autenticados y autorizados los ven/descargan.
-- RF-L-08: **Verificar la licencia del curso adquirido**: confirmar si el contrato permite
-  el acceso a terceros (empleados/alumnos del Dr.) o solo uso personal. Si es solo personal,
-  limitar la plataforma al **Dr. como único usuario** (o a usuarios que él autorice por contrato).
+- RF-L-08: **Licencia del curso RESUELTA (2026-08-30)**: es de **uso personal, un solo
+  usuario**. La plataforma queda limitada al **Dr. como único usuario** — sin
+  auto-registro, sin altas de terceros (ver `docs/02-autenticacion.md` §3.1, actualizado).
 - RF-L-09: Mantener los archivos en el **Dropbox del Dr.** (guardar en privado, compartidos
   solo con quien corresponda); **no** subirlos a YouTube público ni a hosting con URL pública.
 - RF-L-10: Documentar la trazabilidad: quién puede acceder a qué (registro de usuarios autorizados).
@@ -84,5 +84,5 @@ consentimiento en `mdl_usermenu` (decisión de implementación futura).
 - [ ] Aviso de Privacidad y Términos publicados en pt-BR y accesibles.
 - [ ] Banner de cookies operativo.
 - [ ] Proceso de solicitud/borrado de cuenta documentado.
-- [ ] Decisión de licencia del curso RESUELTA (uso personal vs. terceros) y registrada aquí.
-- [ ] Lista de usuarios autorizados al contenido del curso definida.
+- [x] Decisión de licencia del curso RESUELTA: **uso personal, un solo usuario** (2026-08-30).
+- [x] Lista de usuarios autorizados al contenido del curso definida: **solo el Dr.**

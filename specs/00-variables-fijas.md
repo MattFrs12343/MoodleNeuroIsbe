@@ -7,25 +7,33 @@
 
 | Variable | Valor | Estado |
 |---|---|---|
-| `DOMINIO` | `https://portal.MIDOMINIO.com` | ⚠️ REEMPLAZAR por dominio real |
+| `DOMINIO` | `portal.examenes-neuro.com` | Confirmado 2026-08-30 |
 | `NOMBRE_PLATAFORMA` | `Plataforma Educativa` (visible al usuario: definir en pt-BR) | Confirmar con cliente |
 | `SHORTNAME_SITIO` | `plataforma` | Fijo |
 | `ZONA_HORARIA` | `America/Sao_Paulo` (audiencia brasileña) | Fijo |
 
 ## 2. Servidor y BD
 
-| Variable | Valor |
-|---|---|
-| `PHP_VERSION` | 8.2 (mínimo 8.1) |
-| `DB_ENGINE` | `mariadb` (MariaDB 10.x; acepta `mysqli`) |
-| `DB_HOST` | `localhost` (o valor del cPanel) |
-| `DB_NAME` | `moodle_db` |
-| `DB_USER` | `moodle_user` |
-| `DB_PASS` | `<SECRETO>` (no versionar; guardar en gestor) |
-| `PREFIX` | `mdl_` |
-| `APP_DIR` | `public_html/` (DocumentRoot del subdominio) |
-| `DATAROOT` | `/home/USER/moodledata` ⚠️ FUERA de `public_html` si el hosting lo permite; si no, dentro con `.htaccess` de bloqueo |
-| `CRON_EJEC_S` | `*/1 * * * *` |
+> ⚠️ Esta cuenta de hosting (`matiasf6@sh006.hostgator.net`) es **compartida con otros
+> proyectos ya en producción** (otros subdominios de `examenes-neuro.com` con sus propias
+> BD: `matiasf6_cuestionario_bd`, `matiasf6_pedidos_db`). Todo lo de Moodle debe quedar
+> **estrictamente dentro** de `portal.examenes-neuro.com` y `matiasf6_moodle_*`. Nunca tocar
+> los otros subdominios/BD/cron de esa cuenta.
+
+| Variable | Valor | Verificado |
+|---|---|---|
+| `SSH` | `ssh matiasf6@sh006.hostgator.net` (auth por llave, sin password) | 2026-08-30 |
+| `PHP_VERSION` | **8.2** — fijado por vhost vía `uapi LangPHP php_set_vhost_versions` (el CLI por defecto de la cuenta es 8.3; usar siempre el binario explícito `/opt/cpanel/ea-php82/root/usr/bin/php` en cron y CLI) | 2026-08-30 |
+| `DB_ENGINE` | **MySQL 8.0.46 real** (NO MariaDB, pese a lo que sugería el stack fijado). `--dbtype=mysqli` en el instalador; `--dbtype=mariadb` fallaba el chequeo de ambiente (exige MariaDB ≥10.6.7, y `innodb_file_format` ni siquiera existe en MySQL 8) | 2026-08-30 |
+| `DB_HOST` | `localhost` | 2026-08-30 |
+| `DB_NAME` | `matiasf6_moodle_db` (cPanel exige prefijo `matiasf6_`; creada vía `uapi Mysql create_database name=matiasf6_moodle_db` — **NO** usar `uapi Mysql setup_db_and_user`, genera nombres/clave aleatorios propios) | 2026-08-30 |
+| `DB_USER` | `matiasf6_moodle_user` (privilegios `ALL PRIVILEGES` solo sobre `matiasf6_moodle_db`) | 2026-08-30 |
+| `DB_PASS` | `<SECRETO>` — generado 2026-08-30, ver `.env.secrets` (NO versionado, cubierto por `.gitignore`) | — |
+| `PREFIX` | `mdl_` | 2026-08-30 |
+| `APP_DIR` | `/home1/matiasf6/portal.examenes-neuro.com` (DocumentRoot propio del subdominio, NO está bajo `public_html/`) | 2026-08-30 |
+| `DATAROOT` | `/home1/matiasf6/moodledata_portal` (fuera del docroot). Permisos **`0700`** (no `0777`: PHP corre como el propio usuario `matiasf6` vía suPHP/FPM, confirmado por ownership `matiasf6:nobody` del docroot — 0777 sería inseguro sin aportar nada). `$CFG->directorypermissions = 0700` en `config.php` (el default 02777 del instalador choca con el umask 0022 del sistema) | 2026-08-30 |
+| `LOCALREQUESTDIR` | `$CFG->dataroot . '/localrequest'` — **override obligatorio** en `config.php`. El default de Moodle (`sys_get_temp_dir().'/requestdir'` = `/tmp/requestdir`) está "envenenado": ya existe, creado por OTRA cuenta cPanel (uid ajeno) en el `/tmp` compartido del servidor, y da `Permission denied` real pese a mostrar `777` por `ls` (artefacto típico de CageFS/CloudLinux). Sin este override, `admin/cli/cron.php` falla con `invaliddatarootpermissions` | 2026-08-30 |
+| `CRON_EJEC_S` | `* * * * *` vía `crontab` de usuario (no hay módulo `Cron` en `uapi` en esta cuenta): `/opt/cpanel/ea-php82/root/usr/bin/php /home1/matiasf6/portal.examenes-neuro.com/admin/cli/cron.php >/dev/null 2>&1` | 2026-08-30 |
 
 ## 3. Moodle
 
@@ -78,5 +86,5 @@
 | NO tocar core | `theme/boost/*`, `lib/base`, `admin/*`, `mod/*` oficiales |
 | Videos | SOLO embed YouTube (no subir al hosting) |
 | Descargas de video | SOLO vía Dropbox (no alojar mp4 en host) |
-| Contenido del curso | Acceso restringido a usuarios autorizados (licencia = BLOQUEANTE) |
+| Contenido del curso | **RESUELTO (2026-08-30)**: licencia de uso personal, **un solo usuario** (el Dr.). Auto-registro DESHABILITADO; sin altas de terceros. |
 | Idiomas | pt_BR único visible |

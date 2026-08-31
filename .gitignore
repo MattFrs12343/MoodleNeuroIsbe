@@ -13,3 +13,6 @@ Thumbs.db
 
 # Node (por si algún MCP local instala dependencias aquí)
 node_modules/
+
+# Estado interno de la sesión del agente (no es contenido del proyecto)
+.claude/scheduled_tasks.lock

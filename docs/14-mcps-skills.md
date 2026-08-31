@@ -41,28 +41,28 @@ capacidades nativas (shell, file read/write/edit, webfetch, websearch).
 - **Por qué**: casi todas las tarjetas SDD terminan con consultas SQL
   (`SELECT ... FROM mdl_course, mdl_config, mdl_course_sections`). El agente ejecuta las
   mismas consultas de verificación en vez de pedirlas.
-- **Opciones** (elegir la que exista en tu ecosistema):
-  - `designcomputer/mysql_mcp` (Python, `uvx mcp-server-mysql`) — muy usada.
-  - Cualquier MCP MySQL/MariaDB que soporte `MYSQL_HOST, MYSQL_PORT, MYSQL_USER,
-    MYSQL_PASS, MYSQL_DB` vía entorno.
-- **Config (opencode.json)**:
+- **Decisión tomada (2026-08-30)**: se usa `@benborla29/mcp-server-mysql` (Node/`npx`,
+  paquete npm) en vez de la variante Python `uvx mcp-server-mysql`, porque el entorno de
+  desarrollo tiene Node instalado pero no Python/`uv`. Mismo contrato de variables de
+  entorno; solo lectura por defecto (`ALLOW_INSERT/UPDATE/DELETE_OPERATION` deshabilitados),
+  que es justo lo que necesitan las TC de verificación.
+- **Config real del proyecto**: ver `.mcp.json` en la raíz del repo.
   ```json
-  "mcp": {
-    "mysql": {
-      "type": "local",
-      "command": ["uvx", "mcp-server-mysql"],
-      "enabled": true,
-      "environment": {
-        "MYSQL_HOST": "localhost",
-        "MYSQL_PORT": "3306",
-        "MYSQL_USER": "moodle_user",
-        "MYSQL_DB": "moodle_db"
-      }
+  "mysql": {
+    "command": "npx",
+    "args": ["-y", "@benborla29/mcp-server-mysql"],
+    "env": {
+      "MYSQL_HOST": "localhost",
+      "MYSQL_PORT": "3306",
+      "MYSQL_USER": "moodle_user",
+      "MYSQL_DB": "moodle_db",
+      "MYSQL_PASS": "${MYSQL_PASS}"
     }
   }
   ```
-  > ⚠️ **No escribir `MYSQL_PASS` en el archivo**; usar variable de entorno del sistema
-  > (`{env:MYSQL_PASS}`) o el gestor de secretos. Nunca versionar la clave de BD.
+  > ⚠️ **No escribir la clave real de `MYSQL_PASS` en el archivo**; `${MYSQL_PASS}` la toma
+  > de la variable de entorno del sistema. Nunca versionar la clave de BD. Pendiente:
+  > exportar `MYSQL_PASS` en el entorno cuando exista la BD real (Fase 1).
 
 ### 2.3 MCP opcionales (solo si quieres)
 | MCP | Uso | Recomendación |
@@ -132,9 +132,14 @@ capacidades nativas (shell, file read/write/edit, webfetch, websearch).
 
 ## 5. Checklist de instalación
 
-- [ ] `npx @playwright/mcp` funciona (abrir la URL de la portada).
-- [ ] MCP MySQL conecta a `moodle_db` con la clave por variable de entorno.
-- [ ] Carpeta `.opencode/skills/` (o `.claude/skills/`) con las 5 skills.
-- [ ] `CLAUDE.md` y `specs/` legibles por el agente (lectura al inicio).
-- [ ] Probar la skill `moodle-verificacion` en una tarjeta simple (SDD-INF-01).
-- [ ] Registrar en `docs/CHANGELOG.md` el cierre de esta fase de setup.
+- [x] `.mcp.json` creado en la raíz con Playwright + MySQL (2026-08-30).
+- [x] Paquete `@playwright/mcp` resuelve en el registro npm (v0.0.79 verificado).
+- [x] Paquete `@benborla29/mcp-server-mysql` resuelve en el registro npm (v2.0.9 verificado;
+      alternativa Node al `uvx mcp-server-mysql` original, ver §2.2).
+- [ ] Abrir la portada real con Playwright — **pendiente**: aún no hay Moodle instalado (Fase 1).
+- [ ] MCP MySQL conecta a `moodle_db` real — **pendiente**: la BD no existe todavía (Fase 1);
+      falta exportar `MYSQL_PASS` en el entorno cuando exista.
+- [x] Carpeta `.claude/skills/` con las 5 skills (2026-08-30).
+- [x] `CLAUDE.md` y `specs/` legibles por el agente (lectura al inicio).
+- [ ] Probar la skill `moodle-verificacion` en una tarjeta simple (SDD-INF-01) — pendiente de Fase 1.
+- [x] Registrado en `docs/CHANGELOG.md` el cierre de esta fase de setup.

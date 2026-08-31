@@ -102,8 +102,14 @@ Hosting Compartido (Apache/nginx + PHP-FPM/CGI)
 | R-I-04 | Certificado SSL caducado | Media | Medio | Habilitar auto-renovación (Let's Encrypt) |
 
 ## 8. Definition of Done (DoD)
-- [ ] Subdominio con HTTPS y nombre definitivo funcionando.
-- [ ] Moodle instalado y navegable con la portada por defecto.
-- [ ] Cron activo y sin errores en el panel de estado.
-- [ ] `config.php` con `$CFG->debug = 0`.
-- [ ] Documento de credenciales almacenado en gestor externo (no en repo).
+- [x] Subdominio con HTTPS y nombre definitivo funcionando (`portal.examenes-neuro.com`, SSL Let's Encrypt).
+- [x] Moodle instalado y navegable con la portada por defecto (4.5.13+, HTTP 200).
+- [x] Cron activo y sin errores en el panel de estado (verificado por CLI: "Cron run completed correctly").
+- [x] `config.php` con `$CFG->debug = 0`.
+- [ ] Documento de credenciales almacenado en gestor externo (no en repo). **Parcial**: hoy
+      viven en `.env.secrets` local (gitignored, no en el repo), pero no en un gestor de
+      secretos formal — pendiente que el desarrollador las traslade a uno.
+
+> Detalle completo de ejecución, valores reales y desajustes encontrados vs. esta ESD
+> genérica: ver `specs/01-fase-infra.md` (SDD-INF-01 a 07, todas cerradas 2026-08-30) y
+> `specs/00-variables-fijas.md` §2.

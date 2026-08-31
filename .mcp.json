@@ -5,8 +5,8 @@
       "args": ["-y", "@playwright/mcp@latest"]
     },
     "mysql": {
-      "command": "uvx",
-      "args": ["mcp-server-mysql"],
+      "command": "npx",
+      "args": ["-y", "@benborla29/mcp-server-mysql"],
       "env": {
         "MYSQL_HOST": "localhost",
         "MYSQL_PORT": "3306",
