@@ -15,13 +15,77 @@ body {
     color: $navy;
 }
 
-// El logo (PNG cuadrado de alta resolución) viene con clase Bootstrap `img-fluid`
+// El logo (PNG de alta resolución) viene con clase Bootstrap `img-fluid`
 // (width:100% del contenedor) — sin tope se estira gigante. Se limita en todos lados.
 .navbar-brand img,
 #logoimage {
     max-height: 40px;
     width: auto;
     object-fit: contain;
+}
+
+// ---------------------------------------------------------------------------
+// Splash de carga ("símbolo de carga al entrar en la plataforma") — overlay a
+// pantalla completa con el logo (cerebro) mientras carga cualquier página a la
+// que se entra sin sesión iniciada (login, portada como invitado, etc.). Se
+// inyecta por JS vía additionalhtmlfooter (ver theme/plataforma/cli/
+// apply_site_config.php), guardado a `body.notloggedin` — no aparece navegando
+// ya logueado, sería molesto repetirlo en cada clic.
+// ---------------------------------------------------------------------------
+.platform-splash {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(1200px 620px at 50% -12%, #163a63 0%, rgba(#163a63, 0) 62%),
+        linear-gradient(180deg, #0d2c4d 0%, $navy 100%);
+    opacity: 1;
+    transition: opacity .35s ease;
+
+    &.is-hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .platform-splash-ring {
+        position: relative;
+        width: 5.5rem;
+        height: 5.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 3px solid rgba($sky-soft, .18);
+            border-top-color: $sky-soft;
+            animation: platform-splash-spin 1s linear infinite;
+        }
+        img {
+            width: 2.75rem;
+            height: 2.75rem;
+            object-fit: contain;
+            animation: platform-splash-pulse 1.6s ease-in-out infinite;
+        }
+    }
+}
+
+@keyframes platform-splash-spin {
+    to { transform: rotate(360deg); }
+}
+@keyframes platform-splash-pulse {
+    0%, 100% { opacity: .75; transform: scale(.96); }
+    50%      { opacity: 1;   transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .platform-splash-ring::before { animation: none; }
+    .platform-splash-ring img { animation: none; }
 }
 
 h1, h2, h3, h4, .hero-title, .navbar-brand {

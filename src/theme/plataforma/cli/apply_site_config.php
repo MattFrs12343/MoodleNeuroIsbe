@@ -3,8 +3,9 @@
 //   1) el nombre visible del sitio => "NeuroIsbe" (antes "NeuroIsbe — Portal de Estudos").
 //   2) $CFG->additionalhtmlfooter => footer legal (marca actualizada) + el <script> que
 //      dibuja las "constelaciones" animadas en un <canvas>, SÓLO en la página de login
-//      (guardado por la clase body.pagelayout-login; en el resto de las páginas el script
-//      retorna de inmediato y no agrega nada).
+//      (guardado por la clase body.pagelayout-login) + el splash de carga con el logo
+//      (cerebro), SÓLO en páginas sin sesión iniciada (guardado por body.notloggedin —
+//      login, portada como invitado, etc.; nunca navegando ya logueado).
 // Usa API pública de Moodle / config estándar, no toca core ni la BD a mano salvo el
 // campo fullname del curso sitio (lo mismo que hace la pantalla "Front page settings").
 //
@@ -13,15 +14,20 @@ define('CLI_SCRIPT', true);
 require(__DIR__ . '/../../../config.php');
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->libdir . '/clilib.php');
-global $DB;
+global $DB, $OUTPUT;
 
 // 1) Nombre del sitio.
 $DB->set_field('course', 'fullname', 'NeuroIsbe', ['id' => SITEID]);
 rebuild_course_cache(SITEID, true);
 cli_writeln('OK: fullname del sitio => "NeuroIsbe".');
 
-// 2) Footer + constelaciones del login. Nowdoc (<<<'HTML'): nada se interpola.
-$footer = <<<'HTML'
+// URL real del logo (theme/plataforma/pix/logo.png) resuelta vía la API de Moodle
+// (con la revisión de tema correcta) — NO hardcodear la ruta, cambia con cada purge.
+$logourl = $OUTPUT->image_url('logo', 'theme')->out(false);
+
+// 2) Footer + constelaciones del login + splash de carga. Heredoc (interpola $logourl;
+// el resto del bloque no usa "$" en ningún lado, es JS puro).
+$footer = <<<HTML
 <div class="plataforma-footer">
   <div>NeuroIsbe &middot; &copy; 2026</div>
   <div class="plataforma-footer-links">
@@ -101,6 +107,28 @@ $footer = <<<'HTML'
       if (reduce) { draw(); } else { tick(); }
     }, 200);
   });
+})();
+</script>
+<script>
+(function(){
+  var b = document.body;
+  if (!b || b.className.indexOf('notloggedin') === -1) { return; }
+  var splash = document.createElement('div');
+  splash.className = 'platform-splash';
+  splash.setAttribute('aria-hidden', 'true');
+  splash.innerHTML = '<div class="platform-splash-ring"><img src="{$logourl}" alt=""></div>';
+  b.insertBefore(splash, b.firstChild);
+  var minVisibleMs = 400;
+  var shownAt = Date.now();
+  function hide(){
+    var wait = Math.max(0, minVisibleMs - (Date.now() - shownAt));
+    window.setTimeout(function(){
+      splash.classList.add('is-hidden');
+      window.setTimeout(function(){ splash.remove(); }, 400);
+    }, wait);
+  }
+  if (document.readyState === 'complete') { hide(); }
+  else { window.addEventListener('load', hide); }
 })();
 </script>
 HTML;
