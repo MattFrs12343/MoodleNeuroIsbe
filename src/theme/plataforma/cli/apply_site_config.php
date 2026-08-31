@@ -131,8 +131,40 @@ $footer = <<<HTML
   else { window.addEventListener('load', hide); }
 })();
 </script>
+<script>
+(function(){
+  var data = document.getElementById('platform-greeting-data');
+  var block = document.querySelector('.block-myoverview');
+  if (!data || !block || !block.parentNode) { return; }
+  var name = data.textContent.trim();
+  var greeting = document.createElement('div');
+  greeting.className = 'platform-greeting';
+  // El ícono (estático, sin datos del usuario) va por innerHTML; el nombre se
+  // inserta aparte vía textContent para no mezclar HTML con un valor de la BD.
+  greeting.innerHTML =
+    '<span class="platform-greeting-icon">' +
+      '<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+        '<defs><linearGradient id="platform-stetho-grad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">' +
+          '<stop offset="0" stop-color="#134074"/><stop offset="1" stop-color="#3E92CC"/>' +
+        '</linearGradient></defs>' +
+        '<path d="M12 6V16C12 20 15 23 19 23C23 23 26 20 26 16V6" stroke="url(#platform-stetho-grad)" stroke-width="1.8" stroke-linecap="round"/>' +
+        '<path d="M9 6C9 4.3 10.3 3 12 3C13.7 3 15 4.3 15 6" stroke="url(#platform-stetho-grad)" stroke-width="1.8" stroke-linecap="round"/>' +
+        '<path d="M23 6C23 4.3 24.3 3 26 3C27.7 3 29 4.3 29 6" stroke="url(#platform-stetho-grad)" stroke-width="1.8" stroke-linecap="round"/>' +
+        '<path d="M19 23V29" stroke="url(#platform-stetho-grad)" stroke-width="1.8" stroke-linecap="round"/>' +
+        '<circle cx="19" cy="33" r="4.2" stroke="url(#platform-stetho-grad)" stroke-width="1.8"/>' +
+        '<circle cx="30" cy="16" r="3" stroke="url(#platform-stetho-grad)" stroke-width="1.8"/>' +
+      '</svg>' +
+    '</span>' +
+    '<span>' +
+      '<span class="platform-greeting-title" style="display:block;"></span>' +
+      '<span class="platform-greeting-subtitle" style="display:block;">Bem-vindo(a) de volta aos seus cursos.</span>' +
+    '</span>';
+  greeting.querySelector('.platform-greeting-title').textContent = 'Olá, ' + name + '!';
+  block.parentNode.insertBefore(greeting, block);
+})();
+</script>
 HTML;
 
 set_config('additionalhtmlfooter', $footer);
-cli_writeln('OK: additionalhtmlfooter actualizado (footer legal + constelaciones del login).');
+cli_writeln('OK: additionalhtmlfooter actualizado (footer legal, constelaciones del login, splash y saludo en Meus cursos).');
 cli_writeln('Recordá purgar cachés: php admin/cli/purge_caches.php');
