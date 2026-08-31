@@ -134,7 +134,7 @@
 
 ---
 
-### SDD-INF-06 — Programar cron cada 1 minuto ✅ (2026-08-30)
+### SDD-INF-06 — Programar cron (cada 1 minuto según spec) 🟡 ajustado a cada 5 min (2026-08-30/31)
 - **Pasos ejecutados**: esta cuenta **no expone módulo `Cron` en `uapi`**, así que se usó
   `crontab` de usuario directamente por SSH (verificando antes con `crontab -l`, vacío,
   que no había nada que pisar):
@@ -147,8 +147,15 @@
     `invaliddatarootpermissions`).
   - `crontab -l` confirma la línea activa, sin afectar otros cron jobs de la cuenta (no
     había ninguno previo).
+- ⚠️ **Hallazgo posterior (2026-08-31)**: de un día para otro, sin que nadie lo tocara, la
+  línea de cron de Moodle apareció como `*/17 * * * *` en vez de `* * * * *` — el hosting
+  **reescribe automáticamente cron jobs de "cada minuto" a un intervalo mayor**
+  (throttling de cron común en shared hosting, política del proveedor, no un bug propio).
+  Se ajustó explícitamente a `*/5 * * * *` (intervalo razonable para un sitio de un solo
+  usuario; Moodle funciona bien con cron cada 5-15 min). Si se necesita cron cada 1 min de
+  verdad, hay que pedirlo a soporte de HostGator. Detalle: `specs/00-variables-fijas.md` §2.
 - **DoD**
-  - [x] Cron activo y sin errores.
+  - [x] Cron activo y sin errores (a `*/5 min`, no a `*/1 min` — limitación del hosting).
 
 ---
 

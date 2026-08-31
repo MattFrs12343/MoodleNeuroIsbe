@@ -53,18 +53,29 @@
 
 ## Parte C — Backups
 
-### SDD-QA-05 — Backups automáticos (BD diaria + dataroot semanal)
-- **Pasos (cPanel → Cron Jobs)**
-  ```bash
-  # BD DIARIA (retención 7d)
-  0 0 * * * mysqldump -u moodle_user -p'<DB_PASS>' moodle_db | gzip > /home/USER/backups/bd_$(date +\%F).sql.gz && find /home/USER/backups -name 'bd_*.sql.gz' -mtime +7 -delete
-  # DATAROOT SEMANAL (retención 4w)
-  0 3 * * 0 tar czf /home/USER/backups/dataroot_$(date +\%F).tar.gz /home/USER/moodledata && find /home/USER/backups -name 'dataroot_*.tar.gz' -mtime +28 -delete
-  ```
+### SDD-QA-05 — Backups automáticos (BD diaria + dataroot semanal) ✅ (2026-08-31)
+- **Adelantada respecto al orden de fases** (no depende de contenido/tema, y proteger desde
+  ya lo que existe — categorías, plantilla, cuenta del Dr., políticas legales — es mejor
+  que esperar a Fase 6). Ejecutada por SSH, adaptada al hosting real:
+  1. Carpeta **propia** `/home1/matiasf6/moodle_backups/{db,dataroot}/` (permisos 700) —
+     **NO** se reutilizó `~/backups/` ni `~/nm-backups/`, que son de otros proyectos de la
+     misma cuenta compartida (llenos de archivos `pedidos_*` y `predeploy-*`).
+  2. Credenciales de `mysqldump` en `~/moodle_backups/.my.cnf` (permisos 600), NO en el
+     crontab en texto plano.
+  3. Cron real instalado:
+     ```bash
+     0 0 * * * /usr/bin/mysqldump --defaults-extra-file=/home1/matiasf6/moodle_backups/.my.cnf matiasf6_moodle_db | gzip > /home1/matiasf6/moodle_backups/db/bd_$(date +\%F).sql.gz && find /home1/matiasf6/moodle_backups/db -name "bd_*.sql.gz" -mtime +7 -delete
+     0 3 * * 0 tar czf /home1/matiasf6/moodle_backups/dataroot/dataroot_$(date +\%F).tar.gz -C /home1/matiasf6 moodledata_portal && find /home1/matiasf6/moodle_backups/dataroot -name "dataroot_*.tar.gz" -mtime +28 -delete
+     ```
 - **Verificación**
-  - `ls -la /home/USER/backups` → backups recientes presentes.
+  - Backup manual de prueba ejecutado y confirmado: `bd_2026-08-31.sql.gz` (298 KB, 494
+    `CREATE TABLE` + 68 `INSERT INTO`, `gunzip -t` sin corrupción) y
+    `dataroot_2026-08-31.tar.gz` (4 MB, contenido verificado con `tar tzf`).
+  - `mysqldump` mostró un warning benigno ("Access denied... PROCESS privilege... al
+    intentar volcar tablespaces") — normal en hosting compartido sin privilegios SUPER;
+    no afecta el dump de datos/esquema, confirmado revisando el contenido real del dump.
 - **DoD**
-  - [ ] BD diaria y dataroot semanal automáticos.
+  - [x] BD diaria y dataroot semanal automáticos, verificados con un backup manual real.
 
 ### SDD-QA-06 — Prueba de restauración (RTO < 30 min)
 - **Pasos**

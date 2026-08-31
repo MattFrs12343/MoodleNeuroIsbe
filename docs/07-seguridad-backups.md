@@ -92,8 +92,18 @@ ni brechas de seguridad.
 | R-S-04 | Backups no testeados | Media | Alto | Restauración programada trimestral |
 
 ## 10. Definition of Done (DoD)
-- [ ] HTTPS forzado + renovación automática.
-- [ ] Backups automáticos BD (diario) y dataroot (semanal).
-- [ ] Restauración probada en staging (RTO < 30 min).
-- [ ] Suscripción a boletín de seguridad de Moodle activa.
-- [ ] Runbook operativo accesible (en este repo, `runbook/`).
+- [x] HTTPS forzado + renovación automática (Let's Encrypt gestionado por el hosting, ver Fase 1).
+- [x] Backups automáticos BD (diario) y dataroot (semanal) — 2026-08-31, ver `specs/06-fase-qa.md` (SDD-QA-05).
+- [ ] Restauración probada en staging (RTO < 30 min) — diferida: no hay entorno de staging
+      separado en esta cuenta; se probará cuando haya contenido real que valga la pena
+      ensayar restaurar (Fase 4+). Por ahora se verificó integridad de los archivos de
+      backup (`gunzip -t`, `tar tzf`, conteo de tablas/inserts), no una restauración completa.
+- [ ] Suscripción a boletín de seguridad de Moodle activa — pendiente, requiere que el
+      desarrollador decida qué email usar para suscribirse.
+- [x] Runbook operativo accesible (en este repo, `docs/09-migracion-runbook.md` y
+      `specs/06-fase-qa.md`).
+
+> ⚠️ **Hallazgo de infraestructura (2026-08-31)**: este hosting reescribe automáticamente
+> cron jobs de "cada minuto" a un intervalo mayor (detectado como `*/17 min` sin que nadie
+> lo tocara). Se ajustó el cron de Moodle a `*/5 min` explícitamente. Ver
+> `specs/00-variables-fijas.md` §2 y `specs/01-fase-infra.md` (SDD-INF-06).
