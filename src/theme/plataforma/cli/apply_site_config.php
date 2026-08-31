@@ -211,8 +211,59 @@ $footer = <<<HTML
   if (features) { features.style.display = 'none'; }
 })();
 </script>
+<script>
+(function(){
+  // Red de seguridad para la portada PÚBLICA (sin sesión): el hero + "Como
+  // funciona" ya se compactaron por CSS para entrar sin scroll en pantallas
+  // normales, pero en una pantalla más baja de lo esperado (notebook chica,
+  // zoom del navegador, barra de tareas grande) todavía podría sobrar unos
+  // píxeles. Si después de cargar sigue sobrando, se reduce el contenido con
+  // un `transform: scale()` uniforme (mismo aspecto, todo un poco más chico)
+  // hasta que entre exacto — no recorta ni tapa nada.
+  var b = document.body;
+  if (!b || b.className.indexOf('pagelayout-frontpage') === -1) { return; }
+  if (b.className.indexOf('notloggedin') === -1) { return; }
+
+  function fit(){
+    var wrap = document.querySelector('#region-main');
+    if (!wrap) { return; }
+    wrap.style.transform = 'none';
+    wrap.style.height = 'auto';
+    wrap.style.width = '';
+    // Se compara contra el scroll REAL del documento (no un cálculo propio de
+    // "espacio disponible" por sección — algún contenedor padre puede tener su
+    // propia altura fija en 100vh sin recortar overflow, lo que hace que medir
+    // "disponible" por partes dé un resultado distinto al overflow real).
+    void document.body.offsetHeight; // fuerza reflow tras el reset de arriba
+    var totalNeeded = document.documentElement.scrollHeight;
+    var available = window.innerHeight;
+    if (totalNeeded > available) {
+      var overflow = totalNeeded - available;
+      var wrapH = wrap.getBoundingClientRect().height;
+      var scale = Math.max((wrapH - overflow) / wrapH, .7);
+      wrap.style.transformOrigin = 'top center';
+      wrap.style.transform = 'scale(' + scale + ')';
+      wrap.style.width = (100 / scale) + '%';
+      wrap.style.marginLeft = 'auto';
+      wrap.style.marginRight = 'auto';
+      wrap.style.height = (wrapH * scale) + 'px';
+    }
+  }
+  // El script corre al final del body (additionalhtmlfooter) — el evento
+  // "load" de la ventana puede haber disparado ya para cuando llega acá
+  // (listener llegaría tarde y nunca correría), así que se chequea el
+  // estado actual del documento primero.
+  if (document.readyState === 'complete') { fit(); }
+  else { window.addEventListener('load', fit); }
+  var t;
+  window.addEventListener('resize', function(){
+    window.clearTimeout(t);
+    t = window.setTimeout(fit, 200);
+  });
+})();
+</script>
 HTML;
 
 set_config('additionalhtmlfooter', $footer);
-cli_writeln('OK: additionalhtmlfooter actualizado (footer legal, constelaciones del login, splash, saludo en Meus cursos y saludo en el hero de la Página Principal para usuarios logueados).');
+cli_writeln('OK: additionalhtmlfooter actualizado (footer legal, constelaciones del login, splash, saludo en Meus cursos, saludo en el hero de la Página Principal para usuarios logueados y ajuste sin-scroll de la portada pública).');
 cli_writeln('Recordá purgar cachés: php admin/cli/purge_caches.php');
