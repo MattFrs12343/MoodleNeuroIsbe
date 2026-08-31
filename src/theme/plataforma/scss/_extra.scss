@@ -274,12 +274,17 @@ body.pagelayout-login {
         }
     }
     // Igualar EXACTAMENTE el campo de contraseña (envuelto por Moodle en un
-    // .input-group con botón mostrar/ocultar) al de usuario. Causa de que "seguía
-    // distinto": Bootstrap cuadra el borde/radio DERECHO del input cuando no es el
-    // último hijo del input-group (queda con esquinas rectas de un lado) y, según el
-    // intento, el botón le robaba ancho real. Solución definitiva: el input recupera
-    // los 4 bordes redondeados idénticos al de usuario y ocupa el 100%; el botón del
-    // ojo se saca del flujo (position:absolute), sin fondo ni borde, flotando encima.
+    // .input-group con botón mostrar/ocultar) al de usuario.
+    // CAUSA REAL (autopsia): esta instalación tiene `loginpasswordtoggle` en modo
+    // "solo pantallas chicas" (TOGGLE_SENSITIVE_SMALL_SCREENS_ONLY) — Boost mismo
+    // oculta el botón con `@media (min-width: 576px)` (theme/boost/scss/moodle/forms.scss)
+    // y restaura el radio completo del input. El problema: nuestro override anterior
+    // reservaba `padding-right: 3rem` SIEMPRE, aunque el botón ya estuviera oculto por
+    // Boost en desktop — quedaba un hueco vacío a la derecha que hacía ver el campo
+    // "distinto" al de usuario aunque el ancho externo fuera igual. Ahora se replica el
+    // mismo breakpoint de Boost: por debajo de 576px se deja lugar al ícono (visible,
+    // flotando encima vía position:absolute); desde 576px el padding vuelve a ser
+    // IDÉNTICO al de usuario y el contenedor del botón se oculta también por las dudas.
     .toggle-sensitive-wrapper.input-group {
         position: relative;
         display: block;
@@ -301,6 +306,16 @@ body.pagelayout-login {
             align-items: stretch;
             margin: 0;
             z-index: 4;
+        }
+        @media (min-width: 576px) {
+            > .form-control,
+            > .form-control-lg,
+            > input {
+                padding-right: 1rem !important;
+            }
+            .input-group-append {
+                display: none !important;
+            }
         }
         .toggle-sensitive-btn {
             border: 0 !important;
