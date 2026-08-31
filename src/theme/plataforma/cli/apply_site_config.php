@@ -206,6 +206,8 @@ $footer = <<<HTML
   if (title) { title.textContent = 'Olá, ' + name + '!'; }
   if (subtitle) { subtitle.textContent = 'Continue de onde parou nos seus estudos.'; }
   if (btn) { btn.textContent = 'Ir para Meus cursos'; btn.setAttribute('href', '/my/courses.php'); }
+  var trust = hero.querySelector('.hero-trust');
+  if (trust) { trust.style.display = 'none'; }
 
   var features = document.querySelector('.features-section');
   if (features) { features.style.display = 'none'; }

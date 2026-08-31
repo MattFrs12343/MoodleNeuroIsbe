@@ -467,6 +467,11 @@ body.pagelayout-frontpage .page-header-headings h1 {
 // pública debe entrar en la pantalla sin scroll). Menos padding/alto mínimo
 // que antes; el resto (fondo, imagen, degradados) queda igual.
 // ---------------------------------------------------------------------------
+// Ícono de check para la franja de confianza del hero — color claro (para
+// fondo oscuro). Va como fondo CSS: el contenido de la portada pasa por
+// HTMLPurifier, que descarta cualquier <svg> embebido en el texto guardado.
+$icon-check-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3 8.5L6.2 11.7L13 4.5' stroke='%238ECAE6' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
 .hero {
     position: relative;
     display: flex;
@@ -509,12 +514,40 @@ body.pagelayout-frontpage .page-header-headings h1 {
         margin-bottom: 1rem;
         max-width: 30rem;
     }
+    // Franja de confianza bajo el botón — solo datos ya verdaderos en el resto
+    // del sitio (no son afirmaciones nuevas), en formato discreto para que la
+    // portada se sienta menos "vacía" sin agregar contenido inventado.
+    .hero-trust {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1.1rem;
+        padding: 0;
+        list-style: none;
+
+        li {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            font-size: .78rem;
+            color: rgba(255, 255, 255, .72);
+
+            &::before {
+                content: "";
+                flex: 0 0 auto;
+                width: .85rem;
+                height: .85rem;
+                background: $icon-check-light no-repeat center / contain;
+            }
+        }
+    }
 
     @media (max-width: 767px) {
         text-align: center;
         justify-content: center;
         .hero-inner { max-width: 100%; }
         .hero-subtitle { margin-left: auto; margin-right: auto; }
+        .hero-trust { justify-content: center; }
     }
 }
 
@@ -522,6 +555,19 @@ body.pagelayout-frontpage .page-header-headings h1 {
 // defecto en `#page`) — solo en la Página Principal, no afecta otras páginas.
 body.pagelayout-frontpage #page {
     padding-top: 1rem !important;
+}
+
+// Patrón "sinapse" (nodos + líneas) muy sutil de fondo — mismo lenguaje visual
+// que las constelaciones del login, en versión clara para el fondo claro de la
+// portada. Personalización pedida por el desarrollador para que la Página
+// Principal no se sienta "vacía"/genérica y quede más ligada a la identidad
+// del resto del sitio.
+$synapse-bg-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170' viewBox='0 0 170 170'%3E%3Cg fill='none' stroke='%233E92CC' stroke-width='1'%3E%3Cline x1='22' y1='26' x2='76' y2='58' opacity='.28'/%3E%3Cline x1='76' y1='58' x2='46' y2='118' opacity='.22'/%3E%3Cline x1='76' y1='58' x2='134' y2='36' opacity='.28'/%3E%3Cline x1='46' y1='118' x2='104' y2='148' opacity='.2'/%3E%3Cline x1='134' y1='36' x2='154' y2='96' opacity='.22'/%3E%3C/g%3E%3Cg fill='%233E92CC'%3E%3Ccircle cx='22' cy='26' r='2.4' opacity='.4'/%3E%3Ccircle cx='76' cy='58' r='2.8' opacity='.5'/%3E%3Ccircle cx='46' cy='118' r='2.4' opacity='.38'/%3E%3Ccircle cx='134' cy='36' r='2.4' opacity='.4'/%3E%3Ccircle cx='104' cy='148' r='2.2' opacity='.32'/%3E%3Ccircle cx='154' cy='96' r='2' opacity='.32'/%3E%3C/g%3E%3C/svg%3E");
+
+body.pagelayout-frontpage #page {
+    background-image: $synapse-bg-light;
+    background-repeat: repeat;
+    background-size: 170px 170px;
 }
 
 @keyframes hero-rise {
@@ -670,8 +716,25 @@ $icon-lock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
     }
 }
 
+// Antes eran estáticos (solo texto); ahora reaccionan al pasar el mouse —
+// mismo lenguaje que .modulo-card/.course-card (elevación + acento superior),
+// para que la portada no se sienta "muerta" en esa sección.
 .feature-item {
-    padding: 0 .5rem;
+    padding: .9rem .6rem;
+    border-radius: $card-radius;
+    border-top: 3px solid transparent;
+    transition: transform .18s ease, background-color .18s ease, border-color .18s ease;
+
+    &:hover {
+        transform: translateY(-3px);
+        background-color: #fff;
+        border-top-color: $sky;
+        box-shadow: 0 8px 20px rgba($navy, .08);
+
+        .feature-icon {
+            background-color: rgba($blue-deep, .14);
+        }
+    }
 
     .feature-icon {
         display: inline-flex;
@@ -683,6 +746,7 @@ $icon-lock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
         background-position: center;
         background-size: 1.4rem 1.4rem;
         margin-bottom: .5rem;
+        transition: background-color .18s ease;
 
         &--video    { background-image: $icon-video; }
         &--download { background-image: $icon-download; }

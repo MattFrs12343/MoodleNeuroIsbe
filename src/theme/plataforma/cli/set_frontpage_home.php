@@ -27,6 +27,11 @@ $html = <<<HTML
         <h1 class="hero-title">NeuroIsbe</h1>
         <p class="hero-subtitle">Videoaulas, materiais e acompanhamento do seu progresso, tudo em um só lugar, no seu ritmo.</p>
         <a class="btn btn-primary btn-lg" href="{$loginurl}">Entrar</a>
+        <ul class="hero-trust">
+            <li>Acesso individual e seguro</li>
+            <li>Conteúdo 100% em português</li>
+            <li>Estude no seu próprio ritmo</li>
+        </ul>
     </div>
 </div>
 <div class="features-section">
