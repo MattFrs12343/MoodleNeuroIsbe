@@ -23,8 +23,8 @@ $loginurl = (new moodle_url('/login/index.php'))->out(false);
 $html = <<<HTML
 <div class="hero">
     <div class="hero-inner">
-        <span class="hero-eyebrow">NeuroIsbe</span>
-        <h1 class="hero-title">Portal de Estudos NeuroIsbe</h1>
+        <span class="hero-eyebrow">Portal de Estudos</span>
+        <h1 class="hero-title">NeuroIsbe</h1>
         <p class="hero-subtitle">Videoaulas, materiais e acompanhamento do seu progresso, tudo em um só lugar, no seu ritmo.</p>
         <a class="btn btn-primary btn-lg" href="{$loginurl}">Entrar</a>
     </div>

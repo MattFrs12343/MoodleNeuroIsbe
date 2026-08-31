@@ -1,24 +1,40 @@
 // Presets del tema plataforma (child de boost) — identidad NeuroIsbe.
-// Paleta extraída de la propia marca (logo: cabeza/cerebro en navy + teal),
-// no del azul por defecto de Bootstrap. Ver docs/06-portada-tema.md.
+// Paleta clínica en azules (proyecto de un doctor): azul marino + azul oscuro +
+// celeste + gris + blanco. Transmite confianza/profesionalismo médico.
+// Ver docs/06-portada-tema.md.
 
-$ink:         #0B1F33; // navy profundo — navbar, footer, texto principal
-$teal-deep:   #0F6C61; // acento primario (del logo)
-$teal-spark:  #2BC7B4; // acento vivo — hover, foco, "sinapsis"
-$bone:        #F6F4EF; // fondo general, cálido, no blanco puro
-$slate:       #55697C; // texto secundario / muted
-$amber:       #E8A33D; // detalle puntual, usar con moderación
+// --- Paleta NeuroIsbe (azules) ---
+$navy:        #0A2540; // azul marino profundo — navbar, footer, texto principal
+$blue-deep:   #134074; // azul oscuro — acento primario (botones)
+$blue:        #1B5E9B; // azul medio
+$sky:         #3E92CC; // celeste — acento vivo (hover, foco)
+$sky-soft:    #8ECAE6; // celeste claro — degradados, estrellas, glows
+$gray:        #5C6B7A; // gris — texto secundario / muted
+$mist:        #F1F5FA; // blanco azulado — fondo general
+$white:       #FFFFFF;
+
+// --- Alias de compatibilidad ---
+// El resto del tema (_extra.scss) fue escrito con los nombres de la paleta
+// anterior (teal). En vez de reemplazar cientos de referencias a mano (frágil),
+// se remapean esos nombres a la paleta azul nueva: así un solo cambio aquí
+// recolorea TODO el tema de forma consistente. El código nuevo usa los nombres
+// azules directos ($navy, $blue-deep, $sky, …).
+$ink:         $navy;      // (compat) antes navy profundo
+$teal-deep:   $blue-deep; // (compat) acento primario, ahora azul oscuro
+$teal-spark:  $sky;       // (compat) acento vivo, ahora celeste
+$bone:        $mist;      // (compat) fondo
+$slate:       $gray;      // (compat) texto secundario
 
 // Variables reales de Bootstrap/boost (deben ir antes del contenido principal
 // para que las reciban como override, patrón !default).
-$primary:     $teal-deep;
-$secondary:   $slate;
-$dark:        $ink;
-$light:       $bone;
-$body-bg:     $bone;
-$body-color:  $ink;
-$link-color:  $teal-deep;
-$link-hover-color: $teal-spark;
+$primary:     $blue-deep;
+$secondary:   $gray;
+$dark:        $navy;
+$light:       $mist;
+$body-bg:     $mist;
+$body-color:  $navy;
+$link-color:  $blue-deep;
+$link-hover-color: $sky;
 
 $border-radius:      .6rem;
 $border-radius-lg:   .9rem;

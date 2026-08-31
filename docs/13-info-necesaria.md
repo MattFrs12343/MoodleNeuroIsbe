@@ -34,9 +34,12 @@
 - [x] **Logo**: recibido 2026-08-31 (`assets/img3.png`), usado en el tema (ver
   `specs/05-fase-tema.md` SDD-TEM-04). También se recibió una imagen para el fondo del
   hero (`img6.png`), ya aplicada.
-- [x] **Paleta de colores**: se mantuvo la propuesta del tema (azul `#1565c0`), el
-  desarrollador no pidió cambiarla.
-- [ ] Frase de bienvenida del hero (pt-BR) y texto del pie (footer) — pendiente.
+- [x] **Paleta de colores**: definida por el desarrollador (2026-08-31) — azules
+  clínicos acordes a un proyecto de un doctor: azul marino `#0A2540`, azul oscuro
+  `#134074` (primario), azul medio `#1B5E9B`, celeste `#3E92CC` / `#8ECAE6` (acento),
+  gris `#5C6B7A`, blanco azulado `#F1F5FA`. Reemplaza la propuesta teal anterior.
+- [x] Frase de bienvenida del hero y texto del pie (pt-BR): hero "NeuroIsbe" / "Videoaulas,
+  materiais e acompanhamento…"; footer "NeuroIsbe · © 2026" + enlaces legales. Ajustables.
 
 ## 6. Técnico del hosting
 - [x] ¿PHP 8.1+ activo y extensiones? Sí — PHP 8.2 fijado para el subdominio, todas las extensiones necesarias presentes.

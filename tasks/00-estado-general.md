@@ -9,15 +9,20 @@
 
 > **Fases 1, 2 HECHAS. Fase 5 al 80% (con identidad visual completa "NeuroIsbe" +
 > Página Principal con hero y sección "Como funciona" ya en vivo).** Tras el rediseño
-> visual completo, hubo dos rondas más de correcciones puntuales sobre el sitio real:
-> (ronda 4) inputs de login desalineados, hover feo y texto invisible, degradados en
-> botones; (ronda 5, 2026-08-31) inputs de login **seguían** de tamaño distinto (arreglo
-> definitivo: ícono de mostrar/ocultar contraseña flota encima del campo en vez de
-> compartir su ancho), hover "en cajas" del menú superior + texto invisible en el ítem
-> activo (bug real de Boost: `$gray-100` sobre navbar oscuro), "Mis cursos" con estilo
-> propio, y una sección "Como funciona" con íconos SVG en la Página Principal (ver
-> `specs/05-fase-tema.md` SDD-TEM-02/03 para el detalle técnico y los bugs de Moodle
-> encontrados). **Hallazgo nuevo importante**: el contenido de la portada pasa por
+> visual completo, hubo varias rondas de correcciones puntuales sobre el sitio real.
+> **Ronda 6 (última, 2026-08-31)**: el desarrollador pidió **cambiar la paleta a azules
+> clínicos** (azul marino `#0A2540` / azul oscuro `#134074` / celeste `#3E92CC`-`#8ECAE6`
+> / gris `#5C6B7A` / blanco azulado `#F1F5FA`), acortar el nombre visible a **"NeuroIsbe"
+> con degradado**, poner en el **login un fondo azul con constelaciones animadas** (canvas
+> inyectado por `additionalhtmlfooter`, guardado a la página de login, respeta
+> `prefers-reduced-motion`) + un **título "Portal NeuroIsbe" fuera de la caja**, y **corregir
+> otra vez el tamaño de los inputs** (arreglo estructural definitivo: Bootstrap cuadraba
+> el borde derecho del input de contraseña por estar en un input-group; se le restauran
+> los 4 bordes redondeados idénticos al de usuario y el botón del ojo flota encima). Todo
+> verificado por HTTP (CSS servido con la paleta azul, cero hex teal viejos; login con el
+> script de constelaciones y el título). Rondas previas: 4 (inputs/hover/texto/degradados),
+> 5 (inputs def., hover "en cajas" del menú, "Mis cursos", sección "Como funciona" SVG) —
+> ver `specs/05-fase-tema.md` SDD-TEM-02/03. **Hallazgo nuevo importante**: el contenido de la portada pasa por
 > HTMLPurifier, que descarta `<svg>`/`<section>` por completo — los íconos van como fondo
 > CSS (data-URI), no como HTML embebido; verificado con script antes de escribir contenido
 > real, mismo hábito que ya costó una sesión completa con el bug de SCSS silencioso.

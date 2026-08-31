@@ -1,37 +1,22 @@
-// Componentes del tema plataforma — identidad visual NeuroIsbe.
-// Firma: un hilo teal fino ("sinapse") que conecta encabezados y estados hover,
-// eco discreto del mapa de nodos del logo. El resto del sistema se mantiene
-// disciplinado a propósito (ver frontend-design skill: gastar el riesgo en un
-// solo lugar).
+// Componentes del tema plataforma — identidad visual NeuroIsbe (paleta clínica azul).
+// Firma: el "mapa de constelaciones" (nodos + líneas) del login, eco del logo
+// neuronal, y un hilo celeste degradado bajo los títulos de sección. El resto del
+// sistema se mantiene disciplinado a propósito (ver frontend-design skill: gastar el
+// riesgo en un solo lugar — aquí, el fondo animado del login).
 
-// NOTA: en esta instalación las variables Bootstrap ($primary, $font-family-*, etc.)
-// declaradas en presets.scss no se propagan de forma fiable a través de
-// theme/boost/scss/preset/default.scss al pasar por el pipeline de compilación real
-// de Moodle (theme_config::get_css_content_from_scss() / core_scss::to_css()) — se
-// probó exhaustivamente (dump directo del SCSS crudo, compilación aislada,
-// inspección de core_scss) y el valor por defecto de boost siempre gana pese al
-// !default de Sass funcionar como se espera en teoría. En vez de seguir
-// investigando esa causa (posible particularidad del compilador scssphp incluido
-// en esta versión), se aplican los estilos DIRECTO sobre las clases ya renderizadas
-// por Bootstrap/boost, con la misma especificidad + orden de aparición (y
-// !important donde Bootstrap ya trae su propio !important o especificidad mayor).
-// Ver docs/CHANGELOG.md 2026-08-31 para el detalle de la investigación.
-
-// Patrón "sinapse" en SVG puro (nodos + líneas), muy sutil — misma firma visual del
-// .synapse-rule, usada como textura de fondo en vez de decoración aislada.
-// El color va hardcodeado a %232BC7B4 (= $teal-spark, #2BC7B4 percent-encoded) porque
-// va dentro de un data-URI, no se puede interpolar la variable SCSS con seguridad ahí.
-$synapse-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%232BC7B4' stroke-width='1'%3E%3Cline x1='20' y1='24' x2='72' y2='54' opacity='.35'/%3E%3Cline x1='72' y1='54' x2='42' y2='112' opacity='.3'/%3E%3Cline x1='72' y1='54' x2='128' y2='34' opacity='.35'/%3E%3Cline x1='42' y1='112' x2='98' y2='140' opacity='.25'/%3E%3Cline x1='128' y1='34' x2='148' y2='92' opacity='.3'/%3E%3C/g%3E%3Cg fill='%232BC7B4'%3E%3Ccircle cx='20' cy='24' r='2.6' opacity='.55'/%3E%3Ccircle cx='72' cy='54' r='3' opacity='.65'/%3E%3Ccircle cx='42' cy='112' r='2.6' opacity='.5'/%3E%3Ccircle cx='128' cy='34' r='2.6' opacity='.55'/%3E%3Ccircle cx='98' cy='140' r='2.4' opacity='.45'/%3E%3Ccircle cx='148' cy='92' r='2.2' opacity='.45'/%3E%3C/g%3E%3C/svg%3E");
+// NOTA (pipeline): los overrides de clases Bootstrap (.btn-primary, body, a, navbar…)
+// se escriben DIRECTO sobre las clases ya renderizadas, con !important donde Bootstrap
+// trae el suyo. Ver docs/CHANGELOG.md 2026-08-31 y skill boost-theme-custom-global
+// (el bug del error de compilación SCSS silencioso en producción).
 
 body {
     font-family: $font-family-sans-serif !important;
-    background-color: $bone !important;
-    color: $ink;
+    background-color: $mist !important;
+    color: $navy;
 }
 
 // El logo (PNG cuadrado de alta resolución) viene con clase Bootstrap `img-fluid`
-// (width:100% del contenedor) — sin tope se estira gigante. Se limita en todos lados
-// donde aparece (navbar y portada de login).
+// (width:100% del contenedor) — sin tope se estira gigante. Se limita en todos lados.
 .navbar-brand img,
 #logoimage {
     max-height: 40px;
@@ -44,74 +29,83 @@ h1, h2, h3, h4, .hero-title, .navbar-brand {
     letter-spacing: -.01em;
 }
 
-// Nota de contraste: $teal-spark (#2BC7B4) es un acento vivo pensado para fondos OSCUROS
-// (navbar/hero/footer, cada uno con su propio :hover explícito abajo). Sobre fondo claro
-// un link en $teal-spark se lee pálido/poco legible ("se mimetiza"), así que el hover
-// genérico de link usa un tono intermedio, no el mismo spark.
-a { color: $teal-deep; }
-a:hover { color: darken($teal-spark, 14%); }
+// Utilidad de marca: texto con degradado izquierda→derecha (para "NeuroIsbe").
+// Sobre fondo claro. En fondos oscuros (hero/login) se redefine con tonos claros.
+.brand-gradient {
+    background: linear-gradient(90deg, $blue-deep 0%, $sky 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
 
-// Botones primarios con degradé izquierda→derecha (pedido explícito: más llamativo).
+// Nota de contraste: $sky (#3E92CC) es un celeste vivo pensado para acentos/hover.
+// Como texto de link sobre fondo claro se lee algo pálido, así que el link normal usa
+// el azul oscuro y sólo el hover pasa a un celeste más profundo.
+a { color: $blue-deep; }
+a:hover { color: darken($sky, 10%); }
+
+// Botones primarios con degradé izquierda→derecha (pedido explícito).
 .btn-primary {
-    background: linear-gradient(90deg, $teal-deep, $teal-spark) !important;
-    border-color: $teal-deep !important;
+    background: linear-gradient(90deg, $blue-deep 0%, $sky 100%) !important;
+    border: 0 !important;
     border-radius: 2rem !important;
-    padding: .55rem 1.5rem !important;
+    padding: .6rem 1.6rem !important;
     font-weight: 600;
     color: #fff !important;
-    box-shadow: 0 8px 20px rgba($teal-deep, .28);
+    box-shadow: 0 8px 20px rgba($blue-deep, .30);
     transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
 
     &:hover, &:focus, &:active {
-        filter: brightness(.94);
-        border-color: $teal-deep !important;
+        filter: brightness(1.06);
         transform: translateY(-1px);
-        box-shadow: 0 10px 24px rgba($teal-deep, .35);
+        box-shadow: 0 10px 26px rgba($blue-deep, .40);
+        color: #fff !important;
     }
 }
 .btn-outline-primary {
-    color: $teal-deep !important;
-    border-color: $teal-deep !important;
+    color: $blue-deep !important;
+    border-color: $blue-deep !important;
     border-radius: 2rem !important;
 
     &:hover {
-        background: linear-gradient(90deg, $teal-deep, $teal-spark) !important;
-        border-color: $teal-deep !important;
+        background: linear-gradient(90deg, $blue-deep 0%, $sky 100%) !important;
+        border-color: $blue-deep !important;
         color: #fff !important;
     }
 }
 .btn-secondary {
     background-color: #fff;
-    border-color: rgba($ink, .18);
-    color: $ink;
+    border-color: rgba($navy, .18);
+    color: $navy;
 
     &:hover {
-        background-color: rgba($ink, .045);
-        border-color: rgba($ink, .32);
-        color: $ink;
+        background-color: rgba($navy, .045);
+        border-color: rgba($navy, .32);
+        color: $navy;
     }
     &:focus {
-        box-shadow: 0 0 0 .2rem rgba($teal-spark, .25);
+        box-shadow: 0 0 0 .2rem rgba($sky, .25);
     }
 }
-.text-primary { color: $teal-deep !important; }
-.bg-primary   { background: linear-gradient(90deg, $teal-deep, $teal-spark) !important; }
+.text-primary { color: $blue-deep !important; }
+.bg-primary   { background: linear-gradient(90deg, $blue-deep 0%, $sky 100%) !important; }
 
-// Hilo "sinapse": subrayado de acento bajo títulos de sección.
+// Hilo de acento: subrayado celeste degradado bajo títulos de sección.
 .synapse-rule {
     display: block;
     width: 3.5rem;
     height: 3px;
     margin: .6rem 0 1.25rem;
     border-radius: 2px;
-    background: linear-gradient(90deg, $teal-spark, rgba($teal-spark, 0));
+    background: linear-gradient(90deg, $sky, rgba($sky, 0));
 }
 
 // ---------------------------------------------------------------------------
 // Navbar — reskin oscuro (por defecto boost la deja blanca/"navbar-light").
 // ---------------------------------------------------------------------------
 .navbar.navbar-light {
-    background-color: rgba($ink, .92) !important;
+    background-color: rgba($navy, .92) !important;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 1px 0 rgba(255, 255, 255, .06);
@@ -120,21 +114,18 @@ a:hover { color: darken($teal-spark, 14%); }
         color: rgba(255, 255, 255, .88) !important;
     }
     .nav-link:hover, .aabtn:hover, .navbar-brand:hover {
-        color: $teal-spark !important;
+        color: $sky-soft !important;
     }
     .navbar-toggler-icon {
         filter: invert(1);
     }
 
-    // El "more menu" de Boost (core/moremenu, ítems "Página Principal"/"Painel"…)
-    // marca hover/activo con `background-color: $gray-100` (gris casi blanco) y
-    // esquinas cuadradas (`border-radius: initial` en el tab activo) — visto en
-    // theme/boost/scss/moodle/moremenu.scss. Sobre este navbar oscuro esa caja
-    // clara aparece como un parche brusco ("se ve como una caja"), y como el
-    // texto sigue forzado a blanco (regla de arriba), en el ítem ACTIVO queda
-    // texto casi blanco sobre un fondo casi blanco — invisible. Se reemplaza por
-    // un overlay translúcido con esquinas redondeadas y transición suave, y el
-    // texto se mantiene blanco siempre.
+    // El "more menu" de Boost (core/moremenu) marca hover/activo con
+    // `background-color: $gray-100` (gris casi blanco) y esquinas cuadradas
+    // (theme/boost/scss/moodle/moremenu.scss). Sobre este navbar oscuro esa caja
+    // clara aparece como un parche brusco, y en el ítem ACTIVO el texto (forzado a
+    // blanco) queda casi blanco sobre casi blanco = invisible. Se reemplaza por un
+    // overlay translúcido con esquinas redondeadas; texto siempre blanco.
     .moremenu .nav-link {
         border-radius: .5rem .5rem 0 0 !important;
         transition: background-color .15s ease, color .15s ease;
@@ -145,7 +136,7 @@ a:hover { color: darken($teal-spark, 14%); }
         }
         &.active {
             background-color: rgba(255, 255, 255, .08) !important;
-            border-bottom-color: $teal-spark !important;
+            border-bottom-color: $sky-soft !important;
             color: #fff !important;
 
             &:hover, &:focus {
@@ -154,136 +145,163 @@ a:hover { color: darken($teal-spark, 14%); }
         }
     }
 
-    // Interruptor "Modo de edición" (solo admin/profesor, lib/templates/editswitch.mustache):
-    // su <label> no trae color propio y hereda el oscuro por defecto del body —
-    // invisible sobre este navbar oscuro.
+    // Interruptor "Modo de edición" (solo admin/profesor): su <label> hereda el
+    // oscuro del body — invisible sobre el navbar oscuro.
     .editmode-switch-form label {
         color: rgba(255, 255, 255, .88) !important;
     }
 
-    // Los menús desplegables (usuario, notificaciones, "more menu") son paneles
-    // BLANCOS aparte — su texto debe quedar oscuro sin importar las reglas de
-    // arriba (pensadas para el fondo oscuro del navbar), si no quedarían blancos
-    // sobre blanco también.
+    // Los desplegables (usuario, notificaciones, more menu) son paneles BLANCOS
+    // aparte — su texto debe quedar oscuro sin importar las reglas de arriba.
     .dropdown-menu {
-        color: $ink;
+        color: $navy;
 
         .dropdown-item, a, span {
-            color: $ink;
+            color: $navy;
         }
         .dropdown-item:hover, .dropdown-item:focus {
-            background-color: rgba($teal-deep, .08);
-            color: $teal-deep;
+            background-color: rgba($blue-deep, .08);
+            color: $blue-deep;
         }
     }
 }
 
-// Fila secundaria (debajo del navbar oscuro; "Página Principal/Painel" cuando
-// hay subnavegación) — mismo problema de esquinas cuadradas de Boost, pero acá
-// el fondo ya es claro. Se redondea y se cambia el gris genérico por el acento
-// de marca para que combine con el resto del sistema.
+// Fila secundaria (debajo del navbar; fondo claro) — misma corrección de esquinas
+// cuadradas de Boost, con el acento de marca.
 .secondary-navigation .nav-tabs .nav-link {
     border-radius: .5rem .5rem 0 0 !important;
     transition: background-color .15s ease, color .15s ease, border-color .15s ease;
 
     &:hover, &:focus {
-        background-color: rgba($teal-deep, .07) !important;
+        background-color: rgba($blue-deep, .07) !important;
         border-color: transparent;
     }
     &.active {
         background-color: transparent !important;
-        border-bottom-color: $teal-deep;
-        color: $teal-deep;
+        border-bottom-color: $blue-deep;
+        color: $blue-deep;
     }
 }
 
 // ---------------------------------------------------------------------------
-// Login — rediseño completo (antes: logo gigante sin tope + card por defecto).
+// Login — fondo azul con "constelaciones" animadas (canvas inyectado por
+// additionalhtmlfooter, sólo en esta página) + título externo "Portal NeuroIsbe".
 // ---------------------------------------------------------------------------
 body.pagelayout-login {
-    background-color: $bone;
-    background-image: $synapse-bg;
-    background-repeat: repeat;
-    background-size: 160px 160px;
+    min-height: 100vh;
+    background:
+        radial-gradient(1200px 620px at 50% -12%, #163a63 0%, rgba(#163a63, 0) 62%),
+        linear-gradient(180deg, #0d2c4d 0%, $navy 100%);
 
+    // El canvas de constelaciones (creado por JS) va fijo detrás de todo.
+    .login-constellation {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        display: block;
+    }
+    // Todo el contenido del login por encima del canvas.
     #page {
+        position: relative;
+        z-index: 1;
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 90vh;
+        min-height: 92vh;
     }
     .login-wrapper {
         width: 100%;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+
+        // Título FUERA de la caja de login, con degradado claro (legible sobre navy).
+        &::before {
+            content: "Portal NeuroIsbe";
+            display: block;
+            font-family: $font-family-display;
+            font-weight: 700;
+            font-size: clamp(1.7rem, calc(1rem + 3vw), 2.5rem);
+            letter-spacing: -.015em;
+            text-align: center;
+            margin-bottom: 1.6rem;
+            background: linear-gradient(90deg, $sky-soft 0%, #ffffff 65%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
     }
     .login-container {
         width: 100%;
-        max-width: 26rem;
+        max-width: 25rem;
         background: #fff;
         padding: 2.5rem 2.25rem 2rem;
-        border-radius: 1.25rem;
-        border-top: 4px solid $teal-spark;
-        box-shadow: 0 24px 48px rgba($ink, .14);
+        border-radius: 1.1rem;
+        border-top: 4px solid $sky;
+        box-shadow: 0 24px 60px rgba(#04101f, .45);
     }
     #logoimage {
         display: block;
-        max-height: 52px;
+        max-height: 50px;
         margin: 0 auto 1.4rem;
     }
     .form-control-lg {
         border-radius: .7rem;
-        border-color: rgba($ink, .15);
+        border: 1px solid rgba($navy, .15);
         padding: .7rem 1rem;
+        font-size: 1rem;
 
         &:focus {
-            border-color: $teal-spark;
-            box-shadow: 0 0 0 .2rem rgba($teal-spark, .25);
+            border-color: $sky;
+            box-shadow: 0 0 0 .2rem rgba($sky, .28);
         }
     }
-    // Segundo intento: el arreglo anterior (botón "pegado" al lado del input)
-    // seguía dando anchos distintos, porque el botón (`.btn.btn-secondary` con
-    // su propio padding/alto) le sigue robando espacio horizontal al campo real
-    // — el input de contraseña queda más angosto que el de usuario aunque el
-    // grupo completo mida lo mismo. Se resuelve sacando el botón del flujo:
-    // el campo pasa a ocupar el 100% del ancho (idéntico al de usuario, mismo
-    // borde en las 4 esquinas) y el ícono de mostrar/ocultar flota ENCIMA, sin
-    // fondo ni borde propio, con padding-right en el input para no tapar texto.
+    // Igualar EXACTAMENTE el campo de contraseña (envuelto por Moodle en un
+    // .input-group con botón mostrar/ocultar) al de usuario. Causa de que "seguía
+    // distinto": Bootstrap cuadra el borde/radio DERECHO del input cuando no es el
+    // último hijo del input-group (queda con esquinas rectas de un lado) y, según el
+    // intento, el botón le robaba ancho real. Solución definitiva: el input recupera
+    // los 4 bordes redondeados idénticos al de usuario y ocupa el 100%; el botón del
+    // ojo se saca del flujo (position:absolute), sin fondo ni borde, flotando encima.
     .toggle-sensitive-wrapper.input-group {
         position: relative;
         display: block;
+        width: 100%;
 
-        .form-control-lg {
+        > .form-control,
+        > .form-control-lg,
+        > input {
             width: 100%;
-            padding-right: 2.75rem;
+            border-radius: .7rem !important;
+            padding-right: 3rem;
         }
         .input-group-append {
             position: absolute;
             top: 0;
             right: 0;
-            height: 100%;
+            bottom: 0;
+            display: flex;
+            align-items: stretch;
             margin: 0;
+            z-index: 4;
         }
         .toggle-sensitive-btn {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            padding: 0 .9rem;
-            background: transparent !important;
             border: 0 !important;
-            color: $slate;
+            background: transparent !important;
+            box-shadow: none !important;
+            padding: 0 .9rem;
+            color: $gray;
 
-            &:hover {
-                color: $teal-deep;
-            }
+            &:hover { color: $blue-deep; }
             &:focus {
-                box-shadow: none;
-                outline: 2px solid $teal-spark;
+                outline: 2px solid $sky;
                 outline-offset: -2px;
             }
-            .icon {
-                margin: 0;
-            }
+            .icon { margin: 0; }
         }
     }
     .login-form-submit .btn {
@@ -291,20 +309,29 @@ body.pagelayout-login {
     }
     .login-divider {
         margin: 1.25rem 0;
-        border-top: 1px solid rgba($ink, .08);
+        border-top: 1px solid rgba($navy, .08);
     }
-    // El footer nativo pasa a transparente en esta página (se ve el fondo claro de
-    // atrás), pero su texto seguía en el tono claro pensado para el footer oscuro del
-    // resto del sitio — texto claro sobre fondo claro, invisible. Se fuerza a oscuro.
-    #page-footer.bg-white {
-        background-color: transparent !important;
-        box-shadow: none;
-        color: rgba($ink, .65);
 
-        a {
-            color: rgba($ink, .8);
-            &:hover { color: $teal-deep; }
+    // Footer (popover) sobre el fondo navy: botón y panel en vidrio oscuro, texto claro.
+    #page-footer.footer-popover {
+        background: transparent !important;
+        box-shadow: none;
+
+        .btn-footer-popover {
+            background: rgba(255, 255, 255, .14);
+            color: #fff;
+            border: 0;
+            &:hover { background: rgba(255, 255, 255, .24); }
         }
+        .footer-content-popover {
+            background: rgba(#04101f, .88);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: .9rem;
+            color: rgba(255, 255, 255, .82);
+        }
+        a { color: $sky-soft; &:hover { color: #fff; } }
+        .plataforma-footer { color: rgba(255, 255, 255, .72); }
     }
 }
 
@@ -318,11 +345,11 @@ body.pagelayout-login {
     min-height: 22rem;
     padding: 3rem 2rem;
     text-align: left;
-    color: $bone;
+    color: #fff;
     overflow: hidden;
     border-radius: 0 0 1.5rem 1.5rem;
     background:
-        linear-gradient(100deg, $ink 0%, rgba($ink, .82) 40%, rgba($teal-deep, .35) 100%),
+        linear-gradient(100deg, $navy 0%, rgba($navy, .82) 40%, rgba($blue, .40) 100%),
         url([[pix:theme|hero-bg]]) center right / cover no-repeat;
     animation: hero-rise .5s ease both;
 
@@ -334,22 +361,25 @@ body.pagelayout-login {
         font-size: .8rem;
         letter-spacing: .12em;
         text-transform: uppercase;
-        color: $teal-spark;
+        color: $sky-soft;
     }
     .hero-title {
         font-size: clamp(1.9rem, calc(1rem + 3vw), 2.75rem);
-        font-weight: 600;
+        font-weight: 700;
         margin: .35rem 0 .5rem;
+        // "NeuroIsbe" con degradado claro (legible sobre el fondo oscuro del hero).
+        background: linear-gradient(90deg, $sky-soft 0%, #ffffff 70%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
     }
     .hero-subtitle {
         font-size: 1.05rem;
-        color: rgba($bone, .82);
+        color: rgba(255, 255, 255, .82);
         margin-bottom: 1.5rem;
         max-width: 30rem;
     }
-    // El degradé y el resto de los estilos del botón vienen de la regla global
-    // .btn-primary (usa !important, así que una versión sin !important aquí quedaría
-    // muerta) — se ve bien también sobre este fondo oscuro.
 
     @media (max-width: 767px) {
         text-align: center;
@@ -369,95 +399,25 @@ body.pagelayout-login {
 }
 
 // ---------------------------------------------------------------------------
-// Grilla y tarjetas de módulos.
-// ---------------------------------------------------------------------------
-.modulos-grid {
-    display: grid;
-    gap: 1.25rem;
-    padding: 1.5rem;
-    grid-template-columns: 1fr;
-
-    @media (min-width: 576px) {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    @media (min-width: 992px) {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-.modulo-card {
-    position: relative;
-    background: #fff;
-    border-radius: $card-radius;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba($ink, .08);
-    border-top: 3px solid transparent;
-    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-
-    &:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 24px rgba($ink, .14);
-        border-top-color: $teal-spark;
-    }
-
-    .modulo-card-img {
-        width: 100%;
-        height: 160px;
-        object-fit: cover;
-    }
-    .modulo-card-body {
-        padding: 1.1rem 1.15rem 1.25rem;
-    }
-    .modulo-card-tag {
-        display: inline-block;
-        font-family: $font-family-monospace;
-        font-size: .72rem;
-        letter-spacing: .08em;
-        color: $teal-deep;
-        background: rgba($teal-deep, .1);
-        padding: .15rem .5rem;
-        border-radius: .3rem;
-        margin-bottom: .5rem;
-    }
-    .modulo-card-title {
-        margin: 0 0 .35rem;
-        font-family: $font-family-display;
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: $ink;
-    }
-    .modulo-card-summary {
-        margin: 0 0 .75rem;
-        color: $slate;
-        font-size: .93rem;
-    }
-    .btn {
-        border-radius: .5rem;
-    }
-}
-
-// ---------------------------------------------------------------------------
-// "Mis cursos" (block_myoverview) — el look por defecto de Boost es plano
-// (tarjeta blanca sin sombra, texto de progreso genérico). Se homologa al
-// lenguaje visual de .modulo-card. Clases verificadas contra las plantillas
-// reales: course/templates/coursecard.mustache (.card.course-card, .card-img-top
-// como div con background-image, .coursename, .categoryname) y
-// blocks/myoverview/templates/progress-bar.mustache (.progress-text — esta
-// versión de Moodle NO usa una barra visual, solo texto "X% completo").
+// "Mis cursos" (block_myoverview) — se homologa al lenguaje de .modulo-card.
+// Clases verificadas contra las plantillas reales (course/templates/coursecard.mustache,
+// blocks/myoverview/templates/*): contenedor .block-myoverview .card.course-card, imagen
+// .card-img-top (div con background-image), .coursename, .categoryname, y el progreso es
+// sólo texto (.progress-text), esta versión no trae barra visual.
 // ---------------------------------------------------------------------------
 .block-myoverview {
     .course-card {
         border: 0;
         border-radius: $card-radius;
         overflow: hidden;
-        box-shadow: 0 2px 10px rgba($ink, .08);
+        box-shadow: 0 2px 10px rgba($navy, .08);
         border-top: 3px solid transparent;
         transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 
         &:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 24px rgba($ink, .14);
-            border-top-color: $teal-spark;
+            box-shadow: 0 10px 24px rgba($navy, .14);
+            border-top-color: $sky;
         }
     }
     .card-img-top {
@@ -468,46 +428,42 @@ body.pagelayout-login {
     .coursename {
         font-family: $font-family-display;
         font-weight: 600;
-        color: $ink;
+        color: $navy;
     }
     .categoryname {
-        color: $slate;
+        color: $gray;
         font-size: .85rem;
     }
     .progress-text {
-        color: $teal-deep;
+        color: $blue-deep;
         font-weight: 600;
         font-size: .85rem;
     }
-    // Filtros ("Todos"/"En curso"/"Futuros"…, blocks/myoverview/templates/nav-*-selector.mustache)
-    // son botones outline-secondary genéricos de Bootstrap (gris) — se llevan al acento de marca.
+    // Filtros ("Todos"/"En curso"…) son btn-outline-secondary genéricos (gris).
     [data-region="filter"] .btn-outline-secondary {
-        color: $teal-deep;
-        border-color: rgba($teal-deep, .35);
+        color: $blue-deep;
+        border-color: rgba($blue-deep, .35);
 
         &:hover, &:focus, &.show {
-            background-color: $teal-deep;
-            border-color: $teal-deep;
+            background-color: $blue-deep;
+            border-color: $blue-deep;
             color: #fff;
         }
     }
 }
 
 // ---------------------------------------------------------------------------
-// Sección descriptiva "Como funciona" (Página Principal) — íconos propios en
-// SVG, mismo lenguaje de línea fina que la firma "sinapse". Nota técnica: el
-// SVG no puede ir como HTML embebido dentro del contenido de la portada (el
-// summary de la sección pasa por format_text()/HTMLPurifier, que en esta
-// instalación descarta por completo cualquier <svg>/<path>/<circle> — se
-// comprobó con un script de verificación directo antes de escribir contenido
-// real). Por eso los íconos van como fondo CSS (data-URI, mismo patrón que
-// $synapse-bg) sobre un <span> vacío; el color va hardcodeado en el data-URI
-// (= $teal-deep, #0F6C61 percent-encoded) por la misma razón que $synapse-bg.
+// Sección descriptiva "Como funciona" (Página Principal) — íconos propios en SVG.
+// Nota técnica: el SVG no puede ir como HTML embebido en el contenido de la portada
+// (format_text()/HTMLPurifier descarta <svg>/<path>/<circle>/<section>, verificado con
+// script antes de escribir contenido real). Por eso los íconos van como fondo CSS
+// (data-URI) sobre un <span> vacío; el color va hardcodeado en el data-URI (= $blue-deep
+// #134074 percent-encoded).
 // ---------------------------------------------------------------------------
-$icon-video: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none'%3E%3Ccircle cx='20' cy='20' r='15' stroke='%230F6C61' stroke-width='1.6'/%3E%3Cpath d='M17 14L27 20L17 26V14Z' stroke='%230F6C61' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E");
-$icon-download: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none'%3E%3Cpath d='M13 6H23L27 10V32C27 33 26 34 25 34H13C12 34 11 33 11 32V8C11 7 12 6 13 6Z' stroke='%230F6C61' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M23 6V10H27' stroke='%230F6C61' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M19 16V26M19 26L15 22M19 26L23 22' stroke='%230F6C61' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-$icon-progress: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none'%3E%3Cpath d='M8 30L16 22L22 26L32 12' stroke='%230F6C61' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='8' cy='30' r='2.2' fill='%230F6C61'/%3E%3Ccircle cx='16' cy='22' r='2.2' fill='%230F6C61'/%3E%3Ccircle cx='22' cy='26' r='2.2' fill='%230F6C61'/%3E%3Ccircle cx='32' cy='12' r='2.2' fill='%230F6C61'/%3E%3C/svg%3E");
-$icon-lock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none'%3E%3Crect x='11' y='18' width='18' height='14' rx='2' stroke='%230F6C61' stroke-width='1.6'/%3E%3Cpath d='M15 18V13C15 9.7 17.7 7 21 7C24.3 7 27 9.7 27 13V18' stroke='%230F6C61' stroke-width='1.6' stroke-linecap='round'/%3E%3Ccircle cx='20' cy='24' r='1.8' fill='%230F6C61'/%3E%3Cpath d='M20 26V28' stroke='%230F6C61' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+$icon-video: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none'%3E%3Ccircle cx='20' cy='20' r='15' stroke='%23134074' stroke-width='1.6'/%3E%3Cpath d='M17 14L27 20L17 26V14Z' stroke='%23134074' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E");
+$icon-download: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none'%3E%3Cpath d='M13 6H23L27 10V32C27 33 26 34 25 34H13C12 34 11 33 11 32V8C11 7 12 6 13 6Z' stroke='%23134074' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M23 6V10H27' stroke='%23134074' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M19 16V26M19 26L15 22M19 26L23 22' stroke='%23134074' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+$icon-progress: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none'%3E%3Cpath d='M8 30L16 22L22 26L32 12' stroke='%23134074' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='8' cy='30' r='2.2' fill='%23134074'/%3E%3Ccircle cx='16' cy='22' r='2.2' fill='%23134074'/%3E%3Ccircle cx='22' cy='26' r='2.2' fill='%23134074'/%3E%3Ccircle cx='32' cy='12' r='2.2' fill='%23134074'/%3E%3C/svg%3E");
+$icon-lock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none'%3E%3Crect x='11' y='18' width='18' height='14' rx='2' stroke='%23134074' stroke-width='1.6'/%3E%3Cpath d='M15 18V13C15 9.7 17.7 7 21 7C24.3 7 27 9.7 27 13V18' stroke='%23134074' stroke-width='1.6' stroke-linecap='round'/%3E%3Ccircle cx='20' cy='24' r='1.8' fill='%23134074'/%3E%3Cpath d='M20 26V28' stroke='%23134074' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
 
 .features-section {
     max-width: 74rem;
@@ -545,7 +501,7 @@ $icon-lock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
         width: 3.5rem;
         height: 3.5rem;
         border-radius: 50%;
-        background-color: rgba($teal-deep, .09);
+        background-color: rgba($blue-deep, .09);
         background-repeat: no-repeat;
         background-position: center;
         background-size: 1.75rem 1.75rem;
@@ -561,9 +517,77 @@ $icon-lock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
         margin-bottom: .4rem;
     }
     p {
-        color: $slate;
+        color: $gray;
         font-size: .92rem;
         margin: 0;
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Grilla y tarjetas de módulos.
+// ---------------------------------------------------------------------------
+.modulos-grid {
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    grid-template-columns: 1fr;
+
+    @media (min-width: 576px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    @media (min-width: 992px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.modulo-card {
+    position: relative;
+    background: #fff;
+    border-radius: $card-radius;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba($navy, .08);
+    border-top: 3px solid transparent;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 24px rgba($navy, .14);
+        border-top-color: $sky;
+    }
+
+    .modulo-card-img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+    }
+    .modulo-card-body {
+        padding: 1.1rem 1.15rem 1.25rem;
+    }
+    .modulo-card-tag {
+        display: inline-block;
+        font-family: $font-family-monospace;
+        font-size: .72rem;
+        letter-spacing: .08em;
+        color: $blue-deep;
+        background: rgba($blue-deep, .1);
+        padding: .15rem .5rem;
+        border-radius: .3rem;
+        margin-bottom: .5rem;
+    }
+    .modulo-card-title {
+        margin: 0 0 .35rem;
+        font-family: $font-family-display;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: $navy;
+    }
+    .modulo-card-summary {
+        margin: 0 0 .75rem;
+        color: $gray;
+        font-size: .93rem;
+    }
+    .btn {
+        border-radius: .5rem;
     }
 }
 
@@ -591,12 +615,12 @@ $icon-lock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 // Footer.
 // ---------------------------------------------------------------------------
 #page-footer {
-    background: $ink;
-    color: rgba($bone, .75);
+    background: $navy;
+    color: rgba(255, 255, 255, .75);
 
     a {
-        color: rgba($bone, .9);
-        &:hover { color: $teal-spark; }
+        color: rgba(255, 255, 255, .9);
+        &:hover { color: $sky-soft; }
     }
 }
 
@@ -612,6 +636,6 @@ $icon-lock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 
 // Estados de foco visibles (accesibilidad) con el acento de marca.
 a:focus-visible, button:focus-visible, .btn:focus-visible {
-    outline: 2px solid $teal-spark;
+    outline: 2px solid $sky;
     outline-offset: 2px;
 }

@@ -167,6 +167,45 @@
     `feature-icon--video` con el texto pt-BR esperado; `<title>` = "Página inicial | NeuroIsbe".
   - **Falta confirmación visual** (Playwright/captura) — extensión de Chrome no disponible
     otra vez en esta sesión; recomendado hard refresh (`Ctrl+Shift+R`) al revisar.
+- **Sexta pasada, mismo día** — cambio de paleta + login "constelaciones" + nombre con
+  degradado + fix de inputs (definitivo). El desarrollador pidió una paleta acorde a una
+  página de un doctor:
+  1. **Paleta azul clínica** (reemplaza la teal): `$navy #0A2540`, `$blue-deep #134074`
+     (primario), `$blue #1B5E9B`, `$sky #3E92CC` / `$sky-soft #8ECAE6` (acento/celeste),
+     `$gray #5C6B7A`, `$mist #F1F5FA` (fondo). Para recolorear todo el tema sin reemplazar
+     cientos de referencias a mano (frágil), en `presets.scss` se mapean los nombres viejos
+     (`$ink/$teal-deep/$teal-spark/$bone/$slate`) como **alias** de la paleta azul — un solo
+     cambio recolorea todo. Verificado por HTTP: el CSS servido ya no contiene NINGÚN hex
+     teal viejo (`#0F6C61`/`#2BC7B4`/`#0B1F33`/`#F6F4EF` → 0), sí los azules.
+  2. **Nombre del sitio** acortado a **"NeuroIsbe"** (antes "NeuroIsbe — Portal de Estudos")
+     vía `theme/plataforma/cli/apply_site_config.php` (cambia el `fullname` del curso sitio,
+     igual que "Front page settings"). El **degradado** del título se aplica por CSS
+     (`background-clip:text`) en el hero (`NeuroIsbe`) y en el título externo del login.
+     El hero pasó a: eyebrow "Portal de Estudos", título "NeuroIsbe".
+  3. **Login rediseñado**: fondo azul marino en degradado + `<canvas>` de **constelaciones
+     animadas** (puntos que derivan y se conectan con líneas al acercarse — lenguaje neuronal
+     del logo), inyectado por `$CFG->additionalhtmlfooter` con un `<script>` **guardado a la
+     página de login** (`if(!body.classList~pagelayout-login) return;` — nulo en el resto del
+     sitio) y que **respeta `prefers-reduced-motion`** (un frame estático, sin animar). Título
+     **"Portal NeuroIsbe"** fuera de la caja vía `::before` en `.login-wrapper` (degradado
+     claro, sin depender de JS). Se confirmó que la instalación no fija CSP (solo
+     `X-Frame-Options`), así que el script inline corre sin bloqueo.
+  4. **Inputs del login (tercer intento, estructural)**: la causa remanente era que Bootstrap
+     **cuadra el borde/radio derecho** del input de contraseña por estar en un `.input-group`
+     y no ser el último hijo — quedaba con esquinas rectas de un lado frente al de usuario.
+     Se le restauran los **4 bordes redondeados idénticos** (`border-radius:.7rem!important`)
+     y ocupa 100% del ancho; el botón del ojo se saca del flujo (`position:absolute`, sin
+     fondo/borde) flotando encima. Ambos campos son ya el mismo `.form-control-lg`.
+- **Verificación (sexta pasada)**
+  - Compilación aislada (`theme_config::load()` + `setImportPaths()`) sin error ANTES de
+    purgar caché.
+  - CSS servido por HTTP contiene `.btn-primary{background:linear-gradient(90deg,#134074 0%,
+    #3E92CC 100%)!important;…}`, `login-constellation`, `content:"Portal NeuroIsbe"`, el
+    fondo navy del login, y el fix de radio de los inputs; 0 hex teal viejos.
+  - HTML del login contiene el `<script>` de constelaciones con su guarda; `<title>`/`alt`
+    del logo dicen "NeuroIsbe". HTML de `/`: hero title "NeuroIsbe", eyebrow "Portal de Estudos".
+  - `cli/` protegido por `.htaccess` (403 por HTTP, confirmado).
+  - **Falta confirmación visual** — extensión de Chrome no disponible; hard refresh recomendado.
 
 ---
 
