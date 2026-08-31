@@ -26,20 +26,21 @@ class core_renderer extends \theme_boost\output\core_renderer {
     /**
      * El saludo nativo de Moodle (\core\user::welcome_message(), "Olá, {nombre}! 👋")
      * se anuló por completo (lang override en $CFG->dataroot/lang/pt_br_local/moodle.php
-     * — pedido del desarrollador: sacarlo de la Página Principal). En su lugar se arma
-     * un saludo propio, permanente, SOLO en "Meus cursos" (más profesional que un toast
-     * que aparece una sola vez). No se renderiza el HTML final acá: este método
-     * "standard_top_of_body_html" es el único punto de extensión oficial que corre en
-     * TODAS las páginas sin tocar plantillas de core, así que solo deja el dato (nombre
-     * de pila del usuario) en un elemento oculto; el script de additionalhtmlfooter
-     * (mismo patrón ya usado para las constelaciones/splash) arma el widget visual y lo
-     * inserta en el lugar correcto del layout — evita duplicar lógica de posicionamiento
-     * en PHP y CSS a la vez.
+     * — pedido del desarrollador: sacarlo de la Página Principal). En su lugar hay DOS
+     * saludos propios: uno permanente en "Meus cursos", y uno a pantalla completa en la
+     * Página Principal pero SOLO para usuarios logueados (la vista "interna" del perfil;
+     * el visitante sin sesión sigue viendo el hero público con el botón "Entrar"). No se
+     * renderiza el HTML final acá: este método "standard_top_of_body_html" es el único
+     * punto de extensión oficial que corre en TODAS las páginas sin tocar plantillas de
+     * core, así que solo deja el dato (nombre de pila del usuario) en un elemento oculto
+     * — disponible en CUALQUIER página donde haya sesión real (no solo "Meus cursos"),
+     * para que el script de additionalhtmlfooter (mismo patrón ya usado para
+     * constelaciones/splash) decida en JS, según la página, dónde armar cada widget.
      */
     public function standard_top_of_body_html() {
         $html = parent::standard_top_of_body_html();
 
-        if ($this->page->pagelayout === 'mycourses' && isloggedin() && !isguestuser()) {
+        if (isloggedin() && !isguestuser()) {
             global $USER;
             $html .= \html_writer::tag('span', format_string($USER->firstname), [
                 'id' => 'platform-greeting-data',

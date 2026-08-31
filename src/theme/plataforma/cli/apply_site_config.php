@@ -163,8 +163,58 @@ $footer = <<<HTML
   block.parentNode.insertBefore(greeting, block);
 })();
 </script>
+<script>
+(function(){
+  var b = document.body;
+  // Solo la Página Principal, y solo la vista "interna" (con sesión real iniciada):
+  // el visitante sin loguear (body.notloggedin) sigue viendo el hero público de siempre.
+  if (!b || b.className.indexOf('pagelayout-frontpage') === -1) { return; }
+  if (b.className.indexOf('notloggedin') !== -1) { return; }
+  var data = document.getElementById('platform-greeting-data');
+  if (!data) { return; }
+  var name = data.textContent.trim();
+
+  // Oculta el hero/features públicos (siguen en el DOM, solo display:none) para que
+  // la bienvenida sea lo único visible, sin scroll.
+  var hero = document.querySelector('.hero');
+  var features = document.querySelector('.features-section');
+  var heading = document.querySelector('.page-header-headings');
+  [hero, features, heading].forEach(function(el){ if (el) { el.style.display = 'none'; } });
+
+  var navbar = document.querySelector('.navbar');
+  var navH = navbar ? navbar.offsetHeight : 0;
+
+  var welcome = document.createElement('div');
+  welcome.className = 'platform-welcome-back';
+  welcome.style.top = navH + 'px';
+  welcome.innerHTML =
+    '<span class="platform-welcome-icon">' +
+      '<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+        '<defs><linearGradient id="platform-stetho-grad-lg" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">' +
+          '<stop offset="0" stop-color="#8ECAE6"/><stop offset="1" stop-color="#ffffff"/>' +
+        '</linearGradient></defs>' +
+        '<path d="M12 6V16C12 20 15 23 19 23C23 23 26 20 26 16V6" stroke="url(#platform-stetho-grad-lg)" stroke-width="1.8" stroke-linecap="round"/>' +
+        '<path d="M9 6C9 4.3 10.3 3 12 3C13.7 3 15 4.3 15 6" stroke="url(#platform-stetho-grad-lg)" stroke-width="1.8" stroke-linecap="round"/>' +
+        '<path d="M23 6C23 4.3 24.3 3 26 3C27.7 3 29 4.3 29 6" stroke="url(#platform-stetho-grad-lg)" stroke-width="1.8" stroke-linecap="round"/>' +
+        '<path d="M19 23V29" stroke="url(#platform-stetho-grad-lg)" stroke-width="1.8" stroke-linecap="round"/>' +
+        '<circle cx="19" cy="33" r="4.2" stroke="url(#platform-stetho-grad-lg)" stroke-width="1.8"/>' +
+        '<circle cx="30" cy="16" r="3" stroke="url(#platform-stetho-grad-lg)" stroke-width="1.8"/>' +
+      '</svg>' +
+    '</span>' +
+    '<span class="platform-welcome-title" style="display:block;"></span>' +
+    '<p class="platform-welcome-subtitle">Continue de onde parou nos seus estudos.</p>' +
+    '<a class="btn btn-primary btn-lg" href="/my/courses.php">Ir para Meus cursos</a>';
+  welcome.querySelector('.platform-welcome-title').textContent = 'Olá, ' + name + '!';
+  b.insertBefore(welcome, b.firstChild);
+
+  window.addEventListener('resize', function(){
+    var h = navbar ? navbar.offsetHeight : 0;
+    welcome.style.top = h + 'px';
+  });
+})();
+</script>
 HTML;
 
 set_config('additionalhtmlfooter', $footer);
-cli_writeln('OK: additionalhtmlfooter actualizado (footer legal, constelaciones del login, splash y saludo en Meus cursos).');
+cli_writeln('OK: additionalhtmlfooter actualizado (footer legal, constelaciones del login, splash, saludo en Meus cursos y bienvenida a pantalla completa en la Página Principal para usuarios logueados).');
 cli_writeln('Recordá purgar cachés: php admin/cli/purge_caches.php');

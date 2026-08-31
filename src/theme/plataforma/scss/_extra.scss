@@ -567,6 +567,62 @@ body.pagelayout-frontpage .page-header-headings h1 {
 }
 
 // ---------------------------------------------------------------------------
+// Bienvenida a pantalla completa en la Página Principal — SOLO para usuarios con
+// sesión iniciada (vista "interna"; el visitante sin loguear sigue viendo el hero
+// público de siempre). Ocupa toda la vista sin scroll: `position: fixed` la saca
+// del flujo del documento por completo (evita pelear con el padding/margen de la
+// tarjeta blanca de contenido), y el JS que la arma (additionalhtmlfooter) calcula
+// la altura real del navbar en tiempo de ejecución para no superponerse ni dejar
+// hueco. Mismo lenguaje visual que el login (fondo navy + degradado radial).
+// ---------------------------------------------------------------------------
+.platform-welcome-back {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    background:
+        radial-gradient(1200px 620px at 50% -12%, #163a63 0%, rgba(#163a63, 0) 62%),
+        linear-gradient(180deg, #0d2c4d 0%, $navy 100%);
+
+    .platform-welcome-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 5rem;
+        height: 5rem;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, .08);
+        margin-bottom: 1.5rem;
+
+        svg { width: 2.75rem; height: 2.75rem; }
+    }
+    .platform-welcome-title {
+        font-family: $font-family-display;
+        font-weight: 700;
+        font-size: clamp(1.8rem, calc(1rem + 3vw), 2.75rem);
+        margin-bottom: .5rem;
+        background: linear-gradient(90deg, $sky-soft 0%, #ffffff 70%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+    }
+    .platform-welcome-subtitle {
+        color: rgba(255, 255, 255, .8);
+        font-size: 1.05rem;
+        margin-bottom: 2rem;
+        max-width: 28rem;
+    }
+}
+
+// ---------------------------------------------------------------------------
 // "Mis cursos" (block_myoverview) — se homologa al lenguaje de .modulo-card.
 // Clases verificadas contra las plantillas reales (course/templates/coursecard.mustache,
 // blocks/myoverview/templates/*): contenedor .block-myoverview .card.course-card, imagen
