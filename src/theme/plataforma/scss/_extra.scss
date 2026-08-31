@@ -44,21 +44,27 @@ h1, h2, h3, h4, .hero-title, .navbar-brand {
     letter-spacing: -.01em;
 }
 
+// Nota de contraste: $teal-spark (#2BC7B4) es un acento vivo pensado para fondos OSCUROS
+// (navbar/hero/footer, cada uno con su propio :hover explícito abajo). Sobre fondo claro
+// un link en $teal-spark se lee pálido/poco legible ("se mimetiza"), así que el hover
+// genérico de link usa un tono intermedio, no el mismo spark.
 a { color: $teal-deep; }
-a:hover { color: $teal-spark; }
+a:hover { color: darken($teal-spark, 14%); }
 
+// Botones primarios con degradé izquierda→derecha (pedido explícito: más llamativo).
 .btn-primary {
-    background-color: $teal-deep !important;
+    background: linear-gradient(90deg, $teal-deep, $teal-spark) !important;
     border-color: $teal-deep !important;
     border-radius: 2rem !important;
     padding: .55rem 1.5rem !important;
     font-weight: 600;
+    color: #fff !important;
     box-shadow: 0 8px 20px rgba($teal-deep, .28);
-    transition: transform .15s ease, box-shadow .15s ease;
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
 
     &:hover, &:focus, &:active {
-        background-color: darken($teal-deep, 8%) !important;
-        border-color: darken($teal-deep, 8%) !important;
+        filter: brightness(.94);
+        border-color: $teal-deep !important;
         transform: translateY(-1px);
         box-shadow: 0 10px 24px rgba($teal-deep, .35);
     }
@@ -69,23 +75,27 @@ a:hover { color: $teal-spark; }
     border-radius: 2rem !important;
 
     &:hover {
-        background-color: $teal-deep !important;
+        background: linear-gradient(90deg, $teal-deep, $teal-spark) !important;
         border-color: $teal-deep !important;
+        color: #fff !important;
     }
 }
 .btn-secondary {
-    background-color: transparent;
-    border-color: rgba($ink, .25);
+    background-color: #fff;
+    border-color: rgba($ink, .18);
     color: $ink;
 
     &:hover {
-        background-color: rgba($ink, .06);
-        border-color: rgba($ink, .4);
+        background-color: rgba($ink, .045);
+        border-color: rgba($ink, .32);
         color: $ink;
+    }
+    &:focus {
+        box-shadow: 0 0 0 .2rem rgba($teal-spark, .25);
     }
 }
 .text-primary { color: $teal-deep !important; }
-.bg-primary   { background-color: $teal-deep !important; }
+.bg-primary   { background: linear-gradient(90deg, $teal-deep, $teal-spark) !important; }
 
 // Hilo "sinapse": subrayado de acento bajo títulos de sección.
 .synapse-rule {
@@ -161,6 +171,45 @@ body.pagelayout-login {
             box-shadow: 0 0 0 .2rem rgba($teal-spark, .25);
         }
     }
+    // El campo de contraseña viene envuelto por Moodle en un .input-group con un
+    // botón de "mostrar/ocultar" (el de usuario no lo tiene) — de ahí que antes se
+    // vieran de "tamaño distinto" y el botón sin combinar (hover feo). Se le da al
+    // grupo entero el look de un solo campo: el botón hereda el mismo alto/borde/radio
+    // que el input y se pega como si fuera parte de él, no un botón aparte.
+    .toggle-sensitive-wrapper.input-group {
+        .form-control-lg {
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            border-right: 0;
+        }
+        .input-group-append {
+            display: flex;
+        }
+        .toggle-sensitive-btn {
+            display: flex;
+            align-items: center;
+            padding: 0 .9rem;
+            background-color: #fff;
+            border: 1px solid rgba($ink, .15);
+            border-left: 0;
+            border-top-right-radius: .7rem;
+            border-bottom-right-radius: .7rem;
+            color: $slate;
+
+            &:hover {
+                background-color: rgba($ink, .04);
+                color: $teal-deep;
+                border-color: rgba($ink, .15);
+            }
+            &:focus {
+                box-shadow: 0 0 0 .2rem rgba($teal-spark, .25);
+                z-index: 1;
+            }
+            .icon {
+                margin: 0;
+            }
+        }
+    }
     .login-form-submit .btn {
         width: 100%;
     }
@@ -168,9 +217,18 @@ body.pagelayout-login {
         margin: 1.25rem 0;
         border-top: 1px solid rgba($ink, .08);
     }
+    // El footer nativo pasa a transparente en esta página (se ve el fondo claro de
+    // atrás), pero su texto seguía en el tono claro pensado para el footer oscuro del
+    // resto del sitio — texto claro sobre fondo claro, invisible. Se fuerza a oscuro.
     #page-footer.bg-white {
         background-color: transparent !important;
         box-shadow: none;
+        color: rgba($ink, .65);
+
+        a {
+            color: rgba($ink, .8);
+            &:hover { color: $teal-deep; }
+        }
     }
 }
 
@@ -213,17 +271,9 @@ body.pagelayout-login {
         margin-bottom: 1.5rem;
         max-width: 30rem;
     }
-    .btn-primary {
-        background-color: $teal-spark;
-        border-color: $teal-spark;
-        color: $ink;
-        font-weight: 600;
-
-        &:hover {
-            background-color: darken($teal-spark, 8%);
-            border-color: darken($teal-spark, 8%);
-        }
-    }
+    // El degradé y el resto de los estilos del botón vienen de la regla global
+    // .btn-primary (usa !important, así que una versión sin !important aquí quedaría
+    // muerta) — se ve bien también sobre este fondo oscuro.
 
     @media (max-width: 767px) {
         text-align: center;
