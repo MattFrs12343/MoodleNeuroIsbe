@@ -81,8 +81,13 @@ consentimiento en `mdl_usermenu` (decisión de implementación futura).
 | R-L-04 | Enlaces públicos de Dropbox | Media | Medio | Enlaces solo de visualización; rotación si se comparte accidentalmente |
 
 ## 8. Definition of Done (DoD)
-- [ ] Aviso de Privacidad y Términos publicados en pt-BR y accesibles.
-- [ ] Banner de cookies operativo.
-- [ ] Proceso de solicitud/borrado de cuenta documentado.
+- [x] Aviso de Privacidad y Términos publicados en pt-BR y accesibles — 2026-08-30, como
+      Site Policy de Moodle (`admin/tool/policy`), aceptación obligatoria para cualquier
+      usuario. Detalle: `specs/02-fase-config.md` (SDD-CFG-05).
+- [ ] Banner de cookies operativo — diferido a Fase 5 (Moodle 4.5 no tiene uno nativo,
+      requiere trabajo de tema/CSS).
+- [ ] Proceso de solicitud/borrado de cuenta documentado — el contacto ya está (email del
+      Dr. en el propio Aviso de Privacidade), falta documentar el procedimiento paso a
+      paso para cuando llegue una solicitud real.
 - [x] Decisión de licencia del curso RESUELTA: **uso personal, un solo usuario** (2026-08-30).
 - [x] Lista de usuarios autorizados al contenido del curso definida: **solo el Dr.**

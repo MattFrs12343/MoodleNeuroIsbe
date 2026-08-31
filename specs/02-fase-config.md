@@ -112,26 +112,37 @@
 
 ---
 
-### SDD-CFG-05 — Textos legales LGPD (aviso + cookies + términos) ⏸️ PENDIENTE (no ejecutada)
-> **Por qué se dejó pendiente en vez de improvisar**: esta tarjeta es redacción de
-> contenido legal real (Aviso de Privacidade, Termos de Uso), no configuración técnica.
-> `docs/08-legal-lgpd.md` ya da la estructura y el contenido mínimo, pero falta el dato
-> de contacto real para el aviso (`docs/13-info-necesaria.md` §4, aún sin responder) y
-> se prefiere revisar el texto con el desarrollador antes de publicarlo en el sitio real
-> (a diferencia de una config técnica, un texto legal mal redactado si se publica
-> "provisionalmente" puede generar confusión o compromiso real frente al usuario).
-> Además, como ya NO hay auto-registro (RF-A-02 actualizado), el checkbox "Li e aceito"
-> en el registro (paso 3 original) no aplica tal cual — el mecanismo correcto en Moodle es
-> el **Site Policy** (`admin/tool/policy`), que pide aceptación en el **primer login** de
-> cualquier cuenta (incluida la única cuenta del Dr., creada manualmente).
-- **Pasos pendientes** (cuando se resuelva el bloqueo):
-  1. Redactar Aviso de Privacidade y Termos de Uso en pt-BR (base: `docs/08-legal-lgpd.md`).
-  2. Cargarlos como **Site Policy** vía *Site admin → Users → Policies → Manage policies*
-     (o `admin/tool/policy/managedocs.php`), marcando como obligatoria.
-  3. Banner de cookies: evaluar si el nativo de Moodle 4.5 alcanza o hace falta un plugin
-     ligero; documentar la decisión aquí.
+### SDD-CFG-05 — Textos legales LGPD (aviso + cookies + términos) 🟡 mayormente hecha (2026-08-30)
+> El desarrollador confirmó el contacto real (`jmcabello_merida@hotmail.com`, el Dr.), lo
+> que permitió redactar y publicar el contenido con revisión previa (no se improvisó:
+> texto revisado en la conversación antes de publicarlo).
+- **Pasos ejecutados**:
+  1. Redactados **Aviso de Privacidade** y **Termos de Uso** en pt-BR (base:
+     `docs/08-legal-lgpd.md`, contacto real del Dr.).
+  2. Publicados como **Site Policy** (`admin/tool/policy`) vía la API oficial
+     `\tool_policy\api::form_policydoc_add()` + `make_current()`, en un script temporal
+     (borrado después de usarlo) — mismo patrón que las demás tarjetas de esta fase.
+     Ambas políticas: `agreementstyle=CONSENTPAGE`, `optional=AGREEMENT_COMPULSORY`,
+     `audience=ALL`. Esto reemplaza el mecanismo original de "checkbox en registro"
+     (ya no aplica, sin auto-registro) por el flujo nativo de Moodle: **cualquier
+     usuario, incluida la cuenta del Dr., debe aceptar ambas políticas antes de usar el
+     sitio**, y Moodle guarda la fecha de aceptación (RF-L-06) automáticamente en
+     `mdl_tool_policy_acceptances`.
+  3. Banner de cookies: **no ejecutado**. Moodle 4.5 no trae un banner de cookies nativo
+     (se buscó en `admin/settings/*.php`, no existe tal ajuste); requiere trabajo de tema
+     (CSS/JS), que corresponde a la Fase 5 (`docs/06-portada-tema.md`), no a esta fase de
+     configuración. Documentado como pendiente ahí.
+- **Verificación**
+  - `mdl_tool_policy_versions`: 2 filas (`Aviso de Privacidade` id 1, `Termos de Uso` id 2),
+    contenido de 2150 y 1638 caracteres respectivamente (no vacío).
+  - `mdl_tool_policy.currentversionid` apunta a ambas versiones (activas).
+  - `https://portal.examenes-neuro.com/admin/tool/policy/view.php?versionid=1` → `200`,
+    contenido con acentos correctos ("está", "é", "Mérida" — sin mojibake).
+  - `mdl_tool_policy_acceptances` vacío para el usuario del Dr. (id 3) → se le pedirá
+    aceptar en su próximo login, junto con el cambio de contraseña forzado.
 - **DoD**
-  - [ ] Aviso, términos y banner operativos en pt-BR. **No iniciado.**
+  - [x] Aviso y términos operativos en pt-BR, con aceptación obligatoria registrada.
+  - [ ] Banner de cookies — diferido a Fase 5 (trabajo de tema, no de config).
 
 ---
 

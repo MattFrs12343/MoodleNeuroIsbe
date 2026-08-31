@@ -4,13 +4,11 @@
 > Ejecutada 2026-08-30 sobre `portal.examenes-neuro.com`. Detalle completo (comandos reales,
 > hardening extra encontrado) en `specs/02-fase-config.md`.
 
-**Progreso:** 🟡 83% (5/6) · **Estado:** CASI HECHO — solo falta T2.5 (textos legales)
+**Progreso:** ✅ 100% (6/6, con 1 sub-ítem diferido a Fase 5) · **Estado:** HECHO
 
 ## ▶ Próxima tarea
-T2.5 (textos legales LGPD) — requiere: (a) dato de contacto real para el aviso de
-privacidad (`docs/13-info-necesaria.md` §4; se puede usar `jmcabello_merida@hotmail.com`
-si el Dr. confirma que ese es el contacto correcto para privacidad), (b) revisión del
-texto con el desarrollador antes de publicarlo. No bloquea el arranque de Fase 3.
+Ninguna en esta fase. El banner de cookies (sub-ítem de T2.5) queda para Fase 5
+(`tasks/05-tema.md`), es trabajo de tema/CSS, no de configuración.
 
 ---
 
@@ -46,11 +44,12 @@ Estado: ✅
       no se investigó más para evitar un rabbit hole)
 
 ## T2.5 · Textos legales LGPD (SDD-CFG-05)
-Estado: ⏸️ PENDIENTE (no iniciada, decisión consciente de no improvisar contenido legal)
-- [ ] Páginas Aviso de Privacidad y Términos en pt-BR
-- [ ] Cargar como Site Policy (`admin/tool/policy`) — reemplaza el mecanismo de "checkbox
-      en registro" original, ya que no hay auto-registro
-- [ ] Banner de cookies
+Estado: ✅ (banner de cookies diferido a Fase 5)
+- [x] Aviso de Privacidade y Termos de Uso redactados en pt-BR (contacto: Dr., email real)
+- [x] Cargados como Site Policy (`admin/tool/policy`), aceptación obligatoria para
+      cualquier usuario — reemplaza el "checkbox en registro" original (ya no hay
+      auto-registro)
+- [ ] Banner de cookies — Moodle 4.5 no trae uno nativo; pasa a `tasks/05-tema.md`
 
 ## T2.6 · Verificación transversal de idioma (SDD-CFG-06)
 Estado: ✅

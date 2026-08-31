@@ -32,4 +32,8 @@ Estado: ⬜
 ## T5.4 · Logo, favicon, footer (SDD-TEM-04)
 Estado: ⬜
 - [ ] Logo real del Dr., favicon, footer con aviso/términos
+- [ ] **Banner de cookies** (diferido de T2.5, `specs/02-fase-config.md`): Moodle 4.5 no
+      trae uno nativo; implementar con CSS/JS ligero en el tema (`_extra.scss` +
+      pequeño script), "Aceitar / Recusar", enlazando al Aviso de Privacidade
+      (`admin/tool/policy/view.php?versionid=1`)
 - Verificación: captura visual
