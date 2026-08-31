@@ -1,0 +1,3 @@
+# Scripts de una sola ejecución, pensados para correr por SSH (php-cli), nunca por HTTP.
+# Mismo criterio que admin/cli/ debería tener en Moodle: bloquear acceso web directo.
+Require all denied

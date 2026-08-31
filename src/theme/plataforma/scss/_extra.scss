@@ -125,6 +125,76 @@ a:hover { color: darken($teal-spark, 14%); }
     .navbar-toggler-icon {
         filter: invert(1);
     }
+
+    // El "more menu" de Boost (core/moremenu, ítems "Página Principal"/"Painel"…)
+    // marca hover/activo con `background-color: $gray-100` (gris casi blanco) y
+    // esquinas cuadradas (`border-radius: initial` en el tab activo) — visto en
+    // theme/boost/scss/moodle/moremenu.scss. Sobre este navbar oscuro esa caja
+    // clara aparece como un parche brusco ("se ve como una caja"), y como el
+    // texto sigue forzado a blanco (regla de arriba), en el ítem ACTIVO queda
+    // texto casi blanco sobre un fondo casi blanco — invisible. Se reemplaza por
+    // un overlay translúcido con esquinas redondeadas y transición suave, y el
+    // texto se mantiene blanco siempre.
+    .moremenu .nav-link {
+        border-radius: .5rem .5rem 0 0 !important;
+        transition: background-color .15s ease, color .15s ease;
+
+        &:hover, &:focus {
+            background-color: rgba(255, 255, 255, .12) !important;
+            color: #fff !important;
+        }
+        &.active {
+            background-color: rgba(255, 255, 255, .08) !important;
+            border-bottom-color: $teal-spark !important;
+            color: #fff !important;
+
+            &:hover, &:focus {
+                background-color: rgba(255, 255, 255, .16) !important;
+            }
+        }
+    }
+
+    // Interruptor "Modo de edición" (solo admin/profesor, lib/templates/editswitch.mustache):
+    // su <label> no trae color propio y hereda el oscuro por defecto del body —
+    // invisible sobre este navbar oscuro.
+    .editmode-switch-form label {
+        color: rgba(255, 255, 255, .88) !important;
+    }
+
+    // Los menús desplegables (usuario, notificaciones, "more menu") son paneles
+    // BLANCOS aparte — su texto debe quedar oscuro sin importar las reglas de
+    // arriba (pensadas para el fondo oscuro del navbar), si no quedarían blancos
+    // sobre blanco también.
+    .dropdown-menu {
+        color: $ink;
+
+        .dropdown-item, a, span {
+            color: $ink;
+        }
+        .dropdown-item:hover, .dropdown-item:focus {
+            background-color: rgba($teal-deep, .08);
+            color: $teal-deep;
+        }
+    }
+}
+
+// Fila secundaria (debajo del navbar oscuro; "Página Principal/Painel" cuando
+// hay subnavegación) — mismo problema de esquinas cuadradas de Boost, pero acá
+// el fondo ya es claro. Se redondea y se cambia el gris genérico por el acento
+// de marca para que combine con el resto del sistema.
+.secondary-navigation .nav-tabs .nav-link {
+    border-radius: .5rem .5rem 0 0 !important;
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+
+    &:hover, &:focus {
+        background-color: rgba($teal-deep, .07) !important;
+        border-color: transparent;
+    }
+    &.active {
+        background-color: transparent !important;
+        border-bottom-color: $teal-deep;
+        color: $teal-deep;
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -171,39 +241,45 @@ body.pagelayout-login {
             box-shadow: 0 0 0 .2rem rgba($teal-spark, .25);
         }
     }
-    // El campo de contraseña viene envuelto por Moodle en un .input-group con un
-    // botón de "mostrar/ocultar" (el de usuario no lo tiene) — de ahí que antes se
-    // vieran de "tamaño distinto" y el botón sin combinar (hover feo). Se le da al
-    // grupo entero el look de un solo campo: el botón hereda el mismo alto/borde/radio
-    // que el input y se pega como si fuera parte de él, no un botón aparte.
+    // Segundo intento: el arreglo anterior (botón "pegado" al lado del input)
+    // seguía dando anchos distintos, porque el botón (`.btn.btn-secondary` con
+    // su propio padding/alto) le sigue robando espacio horizontal al campo real
+    // — el input de contraseña queda más angosto que el de usuario aunque el
+    // grupo completo mida lo mismo. Se resuelve sacando el botón del flujo:
+    // el campo pasa a ocupar el 100% del ancho (idéntico al de usuario, mismo
+    // borde en las 4 esquinas) y el ícono de mostrar/ocultar flota ENCIMA, sin
+    // fondo ni borde propio, con padding-right en el input para no tapar texto.
     .toggle-sensitive-wrapper.input-group {
+        position: relative;
+        display: block;
+
         .form-control-lg {
-            border-top-right-radius: 0 !important;
-            border-bottom-right-radius: 0 !important;
-            border-right: 0;
+            width: 100%;
+            padding-right: 2.75rem;
         }
         .input-group-append {
-            display: flex;
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            margin: 0;
         }
         .toggle-sensitive-btn {
+            height: 100%;
             display: flex;
             align-items: center;
             padding: 0 .9rem;
-            background-color: #fff;
-            border: 1px solid rgba($ink, .15);
-            border-left: 0;
-            border-top-right-radius: .7rem;
-            border-bottom-right-radius: .7rem;
+            background: transparent !important;
+            border: 0 !important;
             color: $slate;
 
             &:hover {
-                background-color: rgba($ink, .04);
                 color: $teal-deep;
-                border-color: rgba($ink, .15);
             }
             &:focus {
-                box-shadow: 0 0 0 .2rem rgba($teal-spark, .25);
-                z-index: 1;
+                box-shadow: none;
+                outline: 2px solid $teal-spark;
+                outline-offset: -2px;
             }
             .icon {
                 margin: 0;
@@ -357,6 +433,137 @@ body.pagelayout-login {
     }
     .btn {
         border-radius: .5rem;
+    }
+}
+
+// ---------------------------------------------------------------------------
+// "Mis cursos" (block_myoverview) — el look por defecto de Boost es plano
+// (tarjeta blanca sin sombra, texto de progreso genérico). Se homologa al
+// lenguaje visual de .modulo-card. Clases verificadas contra las plantillas
+// reales: course/templates/coursecard.mustache (.card.course-card, .card-img-top
+// como div con background-image, .coursename, .categoryname) y
+// blocks/myoverview/templates/progress-bar.mustache (.progress-text — esta
+// versión de Moodle NO usa una barra visual, solo texto "X% completo").
+// ---------------------------------------------------------------------------
+.block-myoverview {
+    .course-card {
+        border: 0;
+        border-radius: $card-radius;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba($ink, .08);
+        border-top: 3px solid transparent;
+        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+
+        &:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 24px rgba($ink, .14);
+            border-top-color: $teal-spark;
+        }
+    }
+    .card-img-top {
+        height: 110px;
+        background-size: cover;
+        background-position: center;
+    }
+    .coursename {
+        font-family: $font-family-display;
+        font-weight: 600;
+        color: $ink;
+    }
+    .categoryname {
+        color: $slate;
+        font-size: .85rem;
+    }
+    .progress-text {
+        color: $teal-deep;
+        font-weight: 600;
+        font-size: .85rem;
+    }
+    // Filtros ("Todos"/"En curso"/"Futuros"…, blocks/myoverview/templates/nav-*-selector.mustache)
+    // son botones outline-secondary genéricos de Bootstrap (gris) — se llevan al acento de marca.
+    [data-region="filter"] .btn-outline-secondary {
+        color: $teal-deep;
+        border-color: rgba($teal-deep, .35);
+
+        &:hover, &:focus, &.show {
+            background-color: $teal-deep;
+            border-color: $teal-deep;
+            color: #fff;
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Sección descriptiva "Como funciona" (Página Principal) — íconos propios en
+// SVG, mismo lenguaje de línea fina que la firma "sinapse". Nota técnica: el
+// SVG no puede ir como HTML embebido dentro del contenido de la portada (el
+// summary de la sección pasa por format_text()/HTMLPurifier, que en esta
+// instalación descarta por completo cualquier <svg>/<path>/<circle> — se
+// comprobó con un script de verificación directo antes de escribir contenido
+// real). Por eso los íconos van como fondo CSS (data-URI, mismo patrón que
+// $synapse-bg) sobre un <span> vacío; el color va hardcodeado en el data-URI
+// (= $teal-deep, #0F6C61 percent-encoded) por la misma razón que $synapse-bg.
+// ---------------------------------------------------------------------------
+$icon-video: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none'%3E%3Ccircle cx='20' cy='20' r='15' stroke='%230F6C61' stroke-width='1.6'/%3E%3Cpath d='M17 14L27 20L17 26V14Z' stroke='%230F6C61' stroke-width='1.6' stroke-linejoin='round'/%3E%3C/svg%3E");
+$icon-download: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none'%3E%3Cpath d='M13 6H23L27 10V32C27 33 26 34 25 34H13C12 34 11 33 11 32V8C11 7 12 6 13 6Z' stroke='%230F6C61' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M23 6V10H27' stroke='%230F6C61' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M19 16V26M19 26L15 22M19 26L23 22' stroke='%230F6C61' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+$icon-progress: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none'%3E%3Cpath d='M8 30L16 22L22 26L32 12' stroke='%230F6C61' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='8' cy='30' r='2.2' fill='%230F6C61'/%3E%3Ccircle cx='16' cy='22' r='2.2' fill='%230F6C61'/%3E%3Ccircle cx='22' cy='26' r='2.2' fill='%230F6C61'/%3E%3Ccircle cx='32' cy='12' r='2.2' fill='%230F6C61'/%3E%3C/svg%3E");
+$icon-lock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' fill='none'%3E%3Crect x='11' y='18' width='18' height='14' rx='2' stroke='%230F6C61' stroke-width='1.6'/%3E%3Cpath d='M15 18V13C15 9.7 17.7 7 21 7C24.3 7 27 9.7 27 13V18' stroke='%230F6C61' stroke-width='1.6' stroke-linecap='round'/%3E%3Ccircle cx='20' cy='24' r='1.8' fill='%230F6C61'/%3E%3Cpath d='M20 26V28' stroke='%230F6C61' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+
+.features-section {
+    max-width: 74rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+
+    .features-header {
+        text-align: center;
+        margin-bottom: 2rem;
+
+        h2 { margin-bottom: 0; }
+        .synapse-rule { margin-left: auto; margin-right: auto; }
+    }
+}
+
+.features-grid {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: 1fr;
+    text-align: center;
+
+    @media (min-width: 576px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    @media (min-width: 992px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.feature-item {
+    padding: 0 .5rem;
+
+    .feature-icon {
+        display: inline-flex;
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 50%;
+        background-color: rgba($teal-deep, .09);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 1.75rem 1.75rem;
+        margin-bottom: 1rem;
+
+        &--video    { background-image: $icon-video; }
+        &--download { background-image: $icon-download; }
+        &--progress { background-image: $icon-progress; }
+        &--lock     { background-image: $icon-lock; }
+    }
+    h3 {
+        font-size: 1.05rem;
+        margin-bottom: .4rem;
+    }
+    p {
+        color: $slate;
+        font-size: .92rem;
+        margin: 0;
     }
 }
 

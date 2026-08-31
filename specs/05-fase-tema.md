@@ -111,24 +111,81 @@
   - [x] Estilos SCSS compilables y aplicados, verificado por `curl` (colores/fuentes reales
         presentes en el CSS servido).
   - [ ] Confirmación visual — pendiente, extensión de Chrome no disponible en esta sesión.
+- **Cuarta pasada (2026-08-31)**: el desarrollador reportó 3 bugs puntuales sobre el login y
+  el degradado en botones (commit `327f657`, ver ronda anterior en este mismo archivo/CHANGELOG).
+- **Quinta pasada, mismo día**: nueva ronda de correcciones puntuales tras revisar el sitio en
+  vivo:
+  1. **Inputs de usuario/contraseña seguían de tamaño distinto** — el arreglo anterior
+     (botón "mostrar/ocultar" pegado al costado, con su propio borde/alto) igual le robaba
+     ancho real al campo de contraseña frente al de usuario, porque `.btn.btn-secondary`
+     trae su propio padding/alto. Se resolvió sacando el botón del flujo del documento
+     (`position: absolute` sobre `.input-group-append`, fondo/borde transparentes): ambos
+     campos son ahora, estructuralmente, el mismo `.form-control-lg` al 100% de ancho, y el
+     ícono de ojo flota encima sin ocupar espacio de layout.
+  2. **Hover "en cajas" del menú superior y texto invisible en un ítem activo** — se leyó el
+     SCSS real de Boost (`theme/boost/scss/moodle/moremenu.scss`, `navbar.scss`) en vez de
+     adivinar: el `core/moremenu` (ítems "Página Principal"/"Painel"…) marca hover/activo con
+     `background-color: $gray-100` (gris casi blanco) y esquinas cuadradas — sobre nuestro
+     navbar oscuro eso se ve como un parche brusco, y en el ítem ACTIVO el texto (forzado a
+     blanco por nuestra regla de contraste) queda casi blanco sobre ese mismo fondo casi
+     blanco = invisible. Confirmado también un segundo punto de bajo contraste real: el
+     `<label>` del interruptor "Modo de edición" (`lib/templates/editswitch.mustache`) no
+     trae color propio y hereda el oscuro del body, invisible sobre el navbar oscuro (solo
+     lo ve un admin/profesor). Corregido con overlay translúcido + esquinas redondeadas en
+     el menú (top y la fila secundaria `.secondary-navigation .nav-tabs`), texto del switch
+     forzado a claro, y texto de los `.dropdown-menu` (paneles blancos aparte) forzado a
+     oscuro explícitamente para no depender de la herencia.
+  3. **"Mis cursos" (`block_myoverview`) plano/poco agradable** — se leyeron las plantillas
+     reales (`course/templates/coursecard.mustache`, `blocks/myoverview/templates/*`) antes
+     de escribir CSS a ciegas: esta versión no usa una barra de progreso visual (`.progress`),
+     solo texto ("X% completo"), y el contenedor real es `.block-myoverview .card.course-card`
+     (no `.block_myoverview`/`.dashboard-card` como se había asumido inicialmente). Se aplicó
+     el mismo lenguaje visual que `.modulo-card` (sombra suave, borde superior de acento al
+     hover) y se llevaron los botones de filtro (`.btn-outline-secondary`, genéricos grises)
+     al acento de marca.
+  4. **Sección descriptiva con SVG en Página Principal** — pedido nuevo, no format parte de
+     SDD-TEM-03 (que sigue bloqueada solo en la grilla de módulos). Se agregó un hero +
+     sección "Como funciona" (4 íconos: videoaulas, materiales, progreso, acceso seguro) al
+     contenido de la Sección 1 del curso sitio (`índice /`, editable nativamente desde
+     "Activar edición" en la portada) vía `theme/plataforma/cli/set_frontpage_home.php`
+     (API pública `course_update_section()`, sin tocar core ni la BD directo).
+     ⚠️ **Hallazgo real, verificado con script antes de escribir contenido**: el contenido de
+     esa sección pasa por `format_text()`/HTMLPurifier, que en esta instalación **descarta
+     por completo** cualquier `<svg>`, `<path>`, `<circle>` y también `<section>` (verificado:
+     un `<section>` de prueba perdió la etiqueta pero conservó el contenido interno; un
+     `<svg>` de prueba desapareció entero). Por eso los íconos SVG viven como fondo CSS
+     (data-URI en `_extra.scss`, mismo patrón ya usado para `$synapse-bg`) sobre un `<span>`
+     vacío, y el HTML de la portada usa `<div>` en vez de `<section>`.
+- **Verificación (quinta pasada)**
+  - Script de compilación aislado (el mismo de la skill `boost-theme-custom-global`, con
+    `theme_config::load()` + `setImportPaths()`) confirma `to_css()` sin error.
+  - CSS servido por HTTP real (`theme/styles.php/plataforma/.../all`) contiene
+    `feature-icon--video`, `toggle-sensitive-wrapper` (con `position: absolute` en
+    `.input-group-append`, confirmado byte a byte en el CSS compilado), `moremenu .nav-link`
+    y `block-myoverview`.
+  - HTML de `/` servido por HTTP real contiene `class="hero"`, `features-grid` y
+    `feature-icon--video` con el texto pt-BR esperado; `<title>` = "Página inicial | NeuroIsbe".
+  - **Falta confirmación visual** (Playwright/captura) — extensión de Chrome no disponible
+    otra vez en esta sesión; recomendado hard refresh (`Ctrl+Shift+R`) al revisar.
 
 ---
 
-### SDD-TEM-03 — Portada (frontpage) con tarjetas ⏸️ BLOQUEADA
-> Bloqueada por SDD-EST-03 (Fase 3): no hay todavía cursos reales de módulos que listar
-> en la grilla — solo existe la plantilla `mod00` (`visible=0`, no debe aparecer). Armar
-> la portada ahora mostraría una grilla vacía o con datos inventados; se retoma en cuanto
-> haya al menos un módulo real.
-- **Pasos** (sin cambios respecto al plan original, pendientes de ejecutar):
-  1. UI: *Site admin → Front page → Front page settings*: modo "A custom HTML page".
-  2. HTML de la portada: hero + `<div class="modulos-grid">` con tarjetas por curso de la
-     categoría `Módulos`.
-  3. Generar tarjetas con `local_importcontenido_render_modulos_grid()` (ya existe en el
-     plugin) o bloques nativos — **decisión pendiente**, ver nota en la skill
-     `importar-contenido`.
-  4. Enlaces de tarjetas → `/course/view.php?id=<courseid>`.
+### SDD-TEM-03 — Portada (frontpage) con tarjetas 🟡 PARCIAL
+> La **grilla de módulos** sigue bloqueada por SDD-EST-03 (Fase 3): no hay todavía cursos
+> reales que listar — solo existe la plantilla `mod00` (`visible=0`, no debe aparecer).
+> Armar la grilla ahora mostraría datos vacíos/inventados; se retoma en cuanto haya al menos
+> un módulo real. **Lo que SÍ se resolvió (2026-08-31, quinta pasada)**: el hero + una
+> sección descriptiva "Como funciona" con íconos SVG ya están en vivo en la Sección 1 del
+> curso sitio (ver detalle arriba en SDD-TEM-02) — no dependían de tener módulos reales.
+- **Pasos restantes** (grilla de módulos, sin cambios respecto al plan original):
+  1. En cuanto existan módulos reales, sumar `<div class="modulos-grid">` con tarjetas por
+     curso de la categoría `Módulos` al mismo contenido de Sección 1 (o vía
+     `local_importcontenido_render_modulos_grid()`, ya existe en el plugin) — **decisión
+     pendiente**, ver nota en la skill `importar-contenido`.
+  2. Enlaces de tarjetas → `/course/view.php?id=<courseid>`.
 - **DoD**
-  - [ ] Portada con tarjetas funcional y responsive — **no iniciado**.
+  - [x] Hero + sección descriptiva con SVG, responsive, en vivo — 2026-08-31.
+  - [ ] Grilla de tarjetas de módulos — **bloqueada**, falta contenido real del Dr.
   - [ ] Menú mínimo (logo, Módulos, Minha conta, Sair) y footer — el logo del navbar ya
         funciona (ver SDD-TEM-04), falta el resto del menú/footer.
 

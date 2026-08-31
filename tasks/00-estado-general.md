@@ -7,22 +7,32 @@
 
 ## ▶ PUNTO DE CONTINUIDAD (LEER PRIMERO)
 
-> **Fases 1, 2 HECHAS. Fase 5 al 75% (3/4), con identidad visual completa "NeuroIsbe".**
-> El desarrollador dijo que el sitio "se veía mal" y pidió personalización estética real
-> (skill `frontend-design`): paleta propia (navy+teal del logo), tipografía Space
-> Grotesk/IBM Plex, hero con imagen real, navbar/footer oscuros, nombre del sitio
-> actualizado a "NeuroIsbe — Portal de Estudos". Fase 3 sigue bloqueada en T3.3 (falta
-> número/orden real de módulos del Dr.) → Fase 4 y SDD-TEM-03 (portada con tarjetas)
-> dependen de eso. **Tres bugs reales de Moodle 4.5.13 encontrados y corregidos sin
-> tocar core** (ver `specs/05-fase-tema.md` y skill `boost-theme-custom-global`):
-> (1) `$THEME->scss` como array no compilaba nada custom desde el origen del tema;
-> (2) logo/favicon vía Site admin generan URLs rotas; (3) **Moodle traga en silencio
-> cualquier error de compilación SCSS en producción** (una unidad incompatible en un
-> `clamp()` causó horas de investigación antes de encontrar la causa real). Falta
-> confirmación **visual** (Playwright/captura) — la extensión de Chrome no se conectó en
-> ningún intento. **Recomendar al desarrollador un hard refresh (Ctrl+Shift+R)** al
-> revisar, por el `Cache-Control: immutable` del CSS. Sigue pendiente del Dr.: acceso
-> YouTube/Dropbox, conteos de contenido — ver `docs/13-info-necesaria.md` §2, §3.
+> **Fases 1, 2 HECHAS. Fase 5 al 80% (con identidad visual completa "NeuroIsbe" +
+> Página Principal con hero y sección "Como funciona" ya en vivo).** Tras el rediseño
+> visual completo, hubo dos rondas más de correcciones puntuales sobre el sitio real:
+> (ronda 4) inputs de login desalineados, hover feo y texto invisible, degradados en
+> botones; (ronda 5, 2026-08-31) inputs de login **seguían** de tamaño distinto (arreglo
+> definitivo: ícono de mostrar/ocultar contraseña flota encima del campo en vez de
+> compartir su ancho), hover "en cajas" del menú superior + texto invisible en el ítem
+> activo (bug real de Boost: `$gray-100` sobre navbar oscuro), "Mis cursos" con estilo
+> propio, y una sección "Como funciona" con íconos SVG en la Página Principal (ver
+> `specs/05-fase-tema.md` SDD-TEM-02/03 para el detalle técnico y los bugs de Moodle
+> encontrados). **Hallazgo nuevo importante**: el contenido de la portada pasa por
+> HTMLPurifier, que descarta `<svg>`/`<section>` por completo — los íconos van como fondo
+> CSS (data-URI), no como HTML embebido; verificado con script antes de escribir contenido
+> real, mismo hábito que ya costó una sesión completa con el bug de SCSS silencioso.
+> Fase 3 sigue bloqueada en T3.3 (falta número/orden real de módulos del Dr.) → la
+> **grilla de tarjetas de módulos** (única parte pendiente de SDD-TEM-03) depende de eso;
+> el hero + "Como funciona" NO dependían de esto y ya están resueltos. **Tres bugs reales
+> de Moodle 4.5.13 encontrados y corregidos sin tocar core** (ver `specs/05-fase-tema.md`
+> y skill `boost-theme-custom-global`): (1) `$THEME->scss` como array no compilaba nada
+> custom; (2) logo/favicon vía Site admin generan URLs rotas; (3) Moodle traga en
+> silencio cualquier error de compilación SCSS en producción. Falta confirmación
+> **visual** (Playwright/captura) — la extensión de Chrome no se conectó en ningún
+> intento en toda la sesión. **Recomendar al desarrollador un hard refresh
+> (Ctrl+Shift+R)** al revisar, por el `Cache-Control: immutable` del CSS. Sigue
+> pendiente del Dr.: acceso YouTube/Dropbox, conteos de contenido — ver
+> `docs/13-info-necesaria.md` §2, §3.
 
 ---
 
@@ -35,7 +45,7 @@
 | 2 · Configuración base | [02-config.md](02-config.md) | ✅ 100% (6/6) | HECHO (banner de cookies diferido a Fase 5, es trabajo de tema) |
 | 3 · Estructura | [03-estructura.md](03-estructura.md) | 🟡 63% (2.5/4) | **BLOQUEADA** en T3.3 — falta número/orden real de módulos del Dr. (§3) |
 | 4 · Carga de contenido | [04-carga.md](04-carga.md) | ⬜ 0% | PENDIENTE (bloqueada por T3.3 + contenido/YouTube/Dropbox del Dr.) |
-| 5 · Tema y portada | [05-tema.md](05-tema.md) | 🟡 75% (3/4) | Identidad visual completa (NeuroIsbe); solo falta la portada con tarjetas (Fase 3/4) |
+| 5 · Tema y portada | [05-tema.md](05-tema.md) | 🟡 80% (3.5/4) | Identidad visual + hero/"Como funciona" en vivo; solo falta la grilla de tarjetas de módulos (Fase 3/4) |
 | 6 · QA / producción | [06-qa.md](06-qa.md) | 🟡 33% (3/9) | T6.1 (parcial)/T6.3/T6.5 adelantadas 2026-08-31; resto pendiente |
 
 ## Tareas de setup (Fase 0)
