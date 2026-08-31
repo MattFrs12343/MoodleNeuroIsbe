@@ -6,7 +6,9 @@ body {
 
 // Hero de la portada.
 .hero {
-    background: linear-gradient(135deg, $primary, $dark);
+    background:
+        linear-gradient(90deg, rgba(16, 42, 67, .90) 0%, rgba(21, 101, 192, .55) 45%, rgba(21, 101, 192, .15) 100%),
+        url([[pix:theme|hero-bg]]) center right / cover no-repeat;
     color: $light;
     padding: 3rem 1.5rem;
     text-align: center;

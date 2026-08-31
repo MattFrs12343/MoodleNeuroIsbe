@@ -6,7 +6,11 @@ $THEME->name   = 'plataforma';
 $THEME->parents = ['boost'];
 
 $THEME->sheets = [];
-$THEME->scss   = ['presets', '_extra'];
+// $THEME->scss debe ser un callback (no un array de nombres de archivo): Moodle lo
+// invoca para obtener el SCSS completo a compilar. Ver lib.php.
+$THEME->scss   = function($theme) {
+    return theme_plataforma_get_main_scss_content($theme);
+};
 
 $THEME->enable_dock = false;
 

@@ -93,8 +93,14 @@ theme_nombre/
 | R-F-04 | Portada con mucha lógica propia no mantenible | Media | Media | Preferir bloques nativos; no JS complejo |
 
 ## 9. Definition of Done (DoD)
-- [ ] Tema hijo activo basado en boost, con `parents=['boost']`.
-- [ ] Portada con hero + grilla de tarjetas funcional y responsive.
-- [ ] Logo, favicon y footer configurados.
-- [ ] Textos de la interfaz propios en pt-BR.
-- [ ] Verificado: `theme/boost` intacto en control de versiones.
+- [x] Tema hijo activo basado en boost, con `parents=['boost']` — 2026-08-31.
+- [ ] Portada con hero + grilla de tarjetas funcional y responsive — hero listo (fondo
+      real), grilla de tarjetas bloqueada por falta de módulos reales (Fase 3/4).
+- [x] Logo y favicon configurados (2026-08-31, con 2 bugs reales de Moodle 4.5.13
+      encontrados y resueltos sin tocar core — ver `specs/05-fase-tema.md` SDD-TEM-01/04).
+      Footer con enlaces legales: pendiente.
+- [x] Textos de la interfaz propios en pt-BR (heredado de Fase 2).
+- [x] Verificado: `theme/boost` intacto (todo el trabajo fue en `theme/plataforma`).
+
+> Detalle de ejecución: `specs/05-fase-tema.md` (SDD-TEM-01/02 cerradas 2026-08-31;
+> SDD-TEM-03 bloqueada por `docs/13-info-necesaria.md` §3; SDD-TEM-04 parcial).

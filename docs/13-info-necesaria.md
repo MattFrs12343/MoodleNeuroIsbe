@@ -31,9 +31,12 @@
 - [ ] Datos de contacto para el aviso de privacidad (email de contacto).
 
 ## 5. Diseño / identidad visual
-- [ ] **Logo** del Dr./consultorio (SVG o PNG).
-- [ ] **Paleta de colores** (o dejamos la propuesta del tema: azul `#1565c0`).
-- [ ] Frase de bienvenida del hero (pt-BR) y texto del pie (footer).
+- [x] **Logo**: recibido 2026-08-31 (`assets/img3.png`), usado en el tema (ver
+  `specs/05-fase-tema.md` SDD-TEM-04). También se recibió una imagen para el fondo del
+  hero (`img6.png`), ya aplicada.
+- [x] **Paleta de colores**: se mantuvo la propuesta del tema (azul `#1565c0`), el
+  desarrollador no pidió cambiarla.
+- [ ] Frase de bienvenida del hero (pt-BR) y texto del pie (footer) — pendiente.
 
 ## 6. Técnico del hosting
 - [x] ¿PHP 8.1+ activo y extensiones? Sí — PHP 8.2 fijado para el subdominio, todas las extensiones necesarias presentes.
