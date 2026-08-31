@@ -7,15 +7,24 @@
 
 ## Parte A — QA global
 
-### SDD-QA-01 — Ejecutar matriz de pruebas de todas las ESD
-- **Pasos**
-  1. Ejecutar la matriz `TC-` de: `01-infraestructura`, `02-autenticacion`, `03-modulos-cursos`,
-     `04-videos-embed`, `05-audio-documentos`, `06-portada-tema`, `08-legal-lgpd`.
-  2. Anotar fallos en `docs/CHANGELOG.md` con su fix.
-- **Verificación**
-  - 100% de casillas TC en ☑ (verde).
+### SDD-QA-01 — Ejecutar matriz de pruebas de todas las ESD 🟡 parcial (2026-08-31)
+> Adelantada parcialmente junto con SDD-QA-03/05. El 100% de las TC **no puede** estar en
+> verde todavía: `04-videos-embed`, `05-audio-documentos` y `06-portada-tema` dependen por
+> completo de contenido (Fase 4) y tema (Fase 5), que no existen aún — no se marcan como
+> aprobadas sin haberlas verificado de verdad.
+- **Ejecutado y verificado** (vía `curl`/SQL contra el sitio real, no solo lectura de código):
+  - `01-infraestructura`: **4/5 en verde** (TC-I-01/02/03/05); TC-I-04 (cron) queda en 🟡
+    porque corre cada 5 min, no cada 1 min (limitación del hosting, ver Fase 1).
+  - `02-autenticacion`: **5/7 en verde** (TC-A-01/02/03/04/06); TC-A-05 y TC-A-07 en 🟡,
+    bloqueados por no existir aún un curso real visible (Fase 3) ni la portada custom (Fase 5).
+  - `03-modulos-cursos`: **2/6 en verde** (TC-M-02/04); el resto bloqueado por Fase 3/4/5.
+  - `08-legal-lgpd`: **1/6 en verde** (TC-L-06); TC-L-01/03/04 en 🟡 (config lista, falta
+    integración de UI/procedimiento); TC-L-02/05 bloqueados por Fase 4/5.
+  - `04-videos-embed`, `05-audio-documentos`, `06-portada-tema`: **sin ejecutar**, bloqueados
+    en su totalidad por Fases 4 y 5 (no hay contenido ni tema todavía).
 - **DoD**
-  - [ ] Todo TC aprobado.
+  - [ ] Todo TC aprobado — **no alcanzable hasta cerrar Fases 4 y 5**; lo verificable con
+        el estado actual del sitio ya se hizo y está anotado en cada ESD.
 
 ### SDD-QA-02 — Test de usabilidad clave (3 usuarios piloto)
 - **Pasos**
@@ -30,16 +39,44 @@
 
 ## Parte B — Seguridad
 
-### SDD-QA-03 — Endurecimiento final
-- **Pasos**
-  1. `php admin/cli/cfg.php --name=debug --value=0`
-  2. UI: *Site admin → Security*: revisar informe completo: contraseñas fuertes, `login_attempt` activo,
-     antivirus, permisos de archivos (`config.php` 400/440).
-  3. Deshabilitar edición del tema desde la UI (solo por archivos) — según preferencia.
+### SDD-QA-03 — Endurecimiento final ✅ (2026-08-31, adelantada)
+> Adelantada junto con SDD-QA-05, a pedido del desarrollador de enfocarse en backend
+> mientras se espera contenido/diseño del Dr.
+- **Pasos ejecutados**:
+  1. `debug=0` — ya estaba desde Fase 1 (SDD-INF-05). Confirmado sin cambios.
+  2. **Bloqueo de cuenta tras intentos fallidos**: estaba **deshabilitado**
+     (`lockoutthreshold=0`). Se activó: `lockoutthreshold=10` (con `lockoutwindow=1800`
+     y `lockoutduration=1800` ya presentes por defecto).
+  3. **Antivirus**: NO viable en este hosting — se verificó que no existe `clamscan`/
+     `clamdscan` en el `$PATH` de la cuenta (shared hosting sin acceso root para instalar
+     ClamAV). Mitigación de reemplazo: la lista blanca de extensiones de archivo
+     (`SDD-CAR-06`, `mp3/pdf/docx/txt` solamente) reduce igual la superficie de ataque de
+     subida de archivos, aunque sin escaneo de contenido malicioso.
+  4. **`config.php` protegido**: estaba en `640` (rw-r-----), se bajó a **`400`**
+     (r--------, ni siquiera el propio dueño puede escribir sin `chmod` antes). Nota
+     operativa: cualquier edición futura de `config.php` por SSH requiere
+     `chmod 600 config.php`, editar, y volver a `chmod 400`.
+  5. **Edición de tema desde la UI**: no se deshabilitó (queda "según preferencia" del
+     desarrollador, sin acción tomada).
+  6. **Re-revisión completa del Informe de seguridad**: se encontró y corrigió el "Erro"
+     que había quedado abierto desde SDD-CFG-04 (Fase 2) — **no era un artefacto de caché
+     como se supuso entonces**. Instanciando el chequeo `\core\check\environment\publicpaths`
+     directo por CLI (bypaseando cualquier caché de sesión/render) y revisando la tabla de
+     detalle fila por fila (no solo el resumen con deduplicación, que ocultaba el
+     verdadero culpable), se encontraron **dos archivos reales aún públicos**:
+     `.github/FUNDING.yml` y `.stylelintrc` (`200`, nunca antes probados individualmente).
+     Corregido agregando una regla `.htaccess` que bloquea cualquier segmento de ruta que
+     empiece con un punto: `RewriteRule (^|/)\. - [F,L]` (cubre `.git/`, `.github/`,
+     `.stylelintrc`, `.upgradenotes/`, etc. de una sola vez).
 - **Verificación**
-  - Informe de seguridad sin rojos.
+  - `mdl_config`: `lockoutthreshold=10`.
+  - `config.php`: `-r--------` (400), `php -l` sin error, sitio responde `200` tras el cambio.
+  - `curl` a `.github/FUNDING.yml` y `.stylelintrc` → `403` (antes `200`).
+  - **Informe de seguridad final: 0 alertas críticas** (17 OK, 1 Info — solo cantidad de
+    administradores —, 1 Aviso — capacidad de backup de datos de usuario, warning de
+    baseline estándar de Moodle sin acción específica requerida).
 - **DoD**
-  - [ ] Checklist de seguridad completado.
+  - [x] Checklist de seguridad completado (antivirus documentado como no viable en este hosting).
 
 ### SDD-QA-04 — Suscripción a seguridad de Moodle
 - **Pasos**

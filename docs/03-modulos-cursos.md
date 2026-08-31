@@ -77,12 +77,12 @@ Nota: no se extiende el esquema en v1 (se aprovechan campos nativos: `summary`,
 
 | ID | Prueba | Pasos minimales | Resultado esperado | Estado |
 |---|---|---|---|---|
-| TC-M-01 | Crear módulo | Crear curso Módulo 01 con 5 secciones | Aparece en categoría Módulos | ☐ |
-| TC-M-02 | Numeración | Nombrar `Módulo 01` y `Unidade 1..N` | Filtrar por nombre da orden correcto | ☐ |
-| TC-M-03 | Validación de recursos | Crear recurso en sección 5 | Aparece solo en sección 5 | ☐ |
-| TC-M-04 | Visibilidad para login | Deslogueado + entrar curso | Redirige a login (no guest) | ☐ |
-| TC-M-05 | Visibilidad logado | Con cuenta user, abrir curso | Ve secciones y recursos; sin editar | ☐ |
-| TC-M-06 | Summary en tarjeta | Portada (Spec-06) | El summary del curso se muestra en la tarjeta | ☐ |
+| TC-M-01 | Crear módulo | Crear curso Módulo 01 con 5 secciones | Aparece en categoría Módulos | 🟡 verificado con la plantilla `mod00` (6 secciones); falta un módulo real — bloqueado por SDD-EST-03 |
+| TC-M-02 | Numeración | Nombrar `Módulo 01` y `Unidade 1..N` | Filtrar por nombre da orden correcto | ☑ (2026-08-31, aplicado en `mod00`: `Unidade 1`..`5`) |
+| TC-M-03 | Validación de recursos | Crear recurso en sección 5 | Aparece solo en sección 5 | ⬜ bloqueado — no hay recursos aún (Fase 4) |
+| TC-M-04 | Visibilidad para login | Deslogueado + entrar curso | Redirige a login (no guest) | ☑ (2026-08-31, `course/view.php` sin sesión → `303` a login) |
+| TC-M-05 | Visibilidad logado | Con cuenta user, abrir curso | Ve secciones y recursos; sin editar | ⬜ bloqueado — no hay curso real visible con contenido (Fase 3/4) |
+| TC-M-06 | Summary en tarjeta | Portada (Spec-06) | El summary del curso se muestra en la tarjeta | ⬜ bloqueado — portada custom no existe (Fase 5) |
 
 ## 8. Riesgos y mitigaciones
 | ID | Descripción | Prob. | Impacto | Mitigación |

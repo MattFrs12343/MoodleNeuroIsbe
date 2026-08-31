@@ -87,11 +87,11 @@ Hosting Compartido (Apache/nginx + PHP-FPM/CGI)
 
 | ID | Prueba | Pasos minimales | Resultado esperado | Estado |
 |---|---|---|---|---|
-| TC-I-01 | Instalación completa | Navegar a `install.php` con requisitos OK | Instalador finaliza, site visible | ☐ |
-| TC-I-02 | Conexión BD | `php -r 'new PDO("mysql:host=".$argv[1],$argv[2],$argv[3]);' host user pass` | Sin excepciones | ☐ |
-| TC-I-03 | SSL forzado | Visitar `http://` | Redirige a `https://` | ☐ |
-| TC-I-04 | Cron operativo | Revisar `admin/report/status` | "El cron se ha ejecutado..." menor a 1 min | ☐ |
-| TC-I-05 | Sin errores log | Revisar `admin/report/performanceinfo` y `debug=0` | Sin errores PHP | ☐ |
+| TC-I-01 | Instalación completa | Navegar a `install.php` con requisitos OK | Instalador finaliza, site visible | ☑ (2026-08-31) |
+| TC-I-02 | Conexión BD | Conexión real vía `mysql`/Moodle | Sin excepciones | ☑ (2026-08-31) |
+| TC-I-03 | SSL forzado | `curl http://portal.examenes-neuro.com/` | Redirige a `https://` | ☑ (2026-08-31, `303`) |
+| TC-I-04 | Cron operativo | `/report/status/index.php` | "cron ejecutado..." | 🟡 corre cada 5 min, no cada 1 min — el hosting reescribe automáticamente cron "cada minuto" a un intervalo mayor (ver `specs/00-variables-fijas.md` §2); Moodle lo marca como "Aviso" (no crítico) |
+| TC-I-05 | Sin errores log | `debug=0` + informe de seguridad | Sin errores PHP visibles | ☑ (2026-08-31, 0 alertas críticas en Informe de seguridad) |
 
 ## 7. Riesgos y mitigaciones
 | ID Risgo | Descripción | Prob. | Impacto | Mitigación |

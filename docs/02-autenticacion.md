@@ -93,13 +93,13 @@ mdl_config (contiene la config de idioma y auth), mdl_sessions
 
 | ID | Prueba | Pasos minimales | Resultado esperado | Estado |
 |---|---|---|---|---|
-| TC-A-01 | Sin registro público | Ir a `/login/signup.php` | No disponible / redirige (self-registration OFF) | ☐ |
-| TC-A-02 | Login correcto | Acceso con credenciales del Dr. | Entra y ve portada | ☐ |
-| TC-A-03 | Login incorrecto | Password erróneo | Mensaje de error, sin acceso | ☐ |
-| TC-A-04 | Sin guest | Visitar curso sin sesión | Redirige a login (no "Entrar como invitado") | ☐ |
-| TC-A-05 | Usuario sin permisos editar | Con cuenta del Dr., abrir curso | No muestra opciones de edición | ☐ |
-| TC-A-06 | Idioma pt-BR | Entrar como usuario anónimo/logado | Toda la UI en portugués | ☐ |
-| TC-A-07 | Redirección post-login | Login desde portada | Retorna a portada de módulos | ☐ |
+| TC-A-01 | Sin registro público | `curl -I /login/signup.php` | No disponible / redirige (self-registration OFF) | ☑ (2026-08-31, `404`) |
+| TC-A-02 | Login correcto | Acceso con credenciales del Dr. | Entra y ve portada | ☑ (2026-08-31, redirige a cambio de clave obligatorio, esperado) |
+| TC-A-03 | Login incorrecto | Password erróneo | Mensaje de error, sin acceso | ☑ (2026-08-31, redirige de vuelta a `/login/index.php`, no entra) |
+| TC-A-04 | Sin guest | Visitar curso sin sesión | Redirige a login (no "Entrar como invitado") | ☑ (2026-08-31, `303` a `/login/index.php`) |
+| TC-A-05 | Usuario sin permisos editar | Con cuenta del Dr., abrir curso | No muestra opciones de edición | 🟡 config base verificada (rol `user` sin capacidades), falta probar contra un curso real visible — bloqueado por Fase 3 (SDD-EST-03) |
+| TC-A-06 | Idioma pt-BR | Entrar como usuario anónimo/logado | Toda la UI en portugués | ☑ (2026-08-31, verificado en portada/login/admin) |
+| TC-A-07 | Redirección post-login | Login desde portada | Retorna a portada de módulos | 🟡 redirige correctamente tras login, pero la "portada de módulos" final (custom) no existe aún — bloqueado por Fase 5 |
 
 ## 8. Riesgos y mitigaciones
 | ID | Descripción | Prob. | Impacto | Mitigación |

@@ -11,9 +11,11 @@
 > Dr., `docs/13-info-necesaria.md` §3) → Fase 4 también bloqueada por eso + contenido/
 > YouTube/Dropbox. Fase 5 bloqueada por logo/paleta del Dr. (mientras tanto se le pasaron
 > las medidas de imagen necesarias). **Mientras se espera contenido/diseño, se adelantó
-> T6.5 (backups automáticos)** de la Fase 6 por ser puramente backend — ver
-> `specs/06-fase-qa.md`. Sigue pendiente del Dr.: acceso YouTube/Dropbox, conteos de
-> contenido, logo/paleta/imágenes — ver `docs/13-info-necesaria.md` §2, §3, §5.
+> lo backend de la Fase 6**: T6.5 (backups), T6.3 (endurecimiento final — cero alertas
+> críticas en el Informe de seguridad) y T6.1 parcial (matriz TC: todo lo verificable hoy
+> sin contenido/tema ya se corrió). Ver `specs/06-fase-qa.md`. Sigue pendiente del Dr.:
+> acceso YouTube/Dropbox, conteos de contenido, logo/paleta/imágenes — ver
+> `docs/13-info-necesaria.md` §2, §3, §5.
 
 ---
 
@@ -27,7 +29,7 @@
 | 3 · Estructura | [03-estructura.md](03-estructura.md) | 🟡 63% (2.5/4) | **BLOQUEADA** en T3.3 — falta número/orden real de módulos del Dr. (§3) |
 | 4 · Carga de contenido | [04-carga.md](04-carga.md) | ⬜ 0% | PENDIENTE (bloqueada por T3.3 + contenido/YouTube/Dropbox del Dr.) |
 | 5 · Tema y portada | [05-tema.md](05-tema.md) | ⬜ 0% | PENDIENTE (bloqueada por logo/paleta del Dr.) |
-| 6 · QA / producción | [06-qa.md](06-qa.md) | 🟡 11% (1/9) | T6.5 (backups) adelantada 2026-08-31; resto pendiente |
+| 6 · QA / producción | [06-qa.md](06-qa.md) | 🟡 33% (3/9) | T6.1 (parcial)/T6.3/T6.5 adelantadas 2026-08-31; resto pendiente |
 
 ## Tareas de setup (Fase 0)
 
@@ -48,4 +50,4 @@
 | 3 | ☑ (parcial: 2.5/4, bloqueada en T3.3) |
 | 4 | ☐ |
 | 5 | ☐ |
-| 6 | ☑ (parcial: 1/9, T6.5 adelantada) |
+| 6 | ☑ (parcial: 3/9, T6.1/T6.3/T6.5 adelantadas) |

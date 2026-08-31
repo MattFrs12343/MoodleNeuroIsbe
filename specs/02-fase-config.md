@@ -98,13 +98,14 @@
   - `mdl_config`: `protectusernames=1`, `passwordpolicy=1`, `auth=manual`,
     `guestloginbutton=0`, `enrol_plugins_enabled=manual`.
   - Todas las rutas antes expuestas devuelven `403` (verificado con `curl` una por una).
-  - **Nota abierta**: el badge de "Verificar todos os caminhos públicos/privados" en la UI
-    del Informe de seguridad sigue mostrando "Erro" pese a que cada ruta individual listada
-    ya reporta "(Retornado 403, o ideal deveria ser 404)" — que según el propio código del
-    check debería bajar la severidad a informativa. No se encontró la causa exacta (se
-    descartó como caché tras `purge_caches.php`, sin éxito) y no se siguió investigando
-    para no perder tiempo en un posible artefacto de renderizado. El estado real verificado
-    por fuera de la UI (vía `curl`, archivo por archivo) es correcto.
+  - **Actualización (SDD-QA-03, 2026-08-31)**: el badge "Erro" que quedaba en este chequeo
+    **no era un artefacto de caché/render como se supuso aquí** — era un hallazgo real:
+    `.github/FUNDING.yml` y `.stylelintrc` seguían públicamente accesibles (`200`), dos
+    archivos del patrón de "dotfiles" que nunca se probaron individualmente en esta
+    tarjeta. Se encontraron instanciando el chequeo directo por CLI (bypaseando cualquier
+    caché de sesión) y revisando la tabla de detalle fila por fila, no solo el resumen.
+    Corregido y verificado en SDD-QA-03 — el Informe de seguridad ya no tiene ninguna
+    alerta crítica.
 - **DoD**
   - [x] Endurecimiento de config aplicado y verificado por `curl`/SQL.
   - [~] Informe de seguridad de la UI: sin alertas fuera de esta única fila, cuya causa

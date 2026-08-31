@@ -65,12 +65,12 @@ consentimiento en `mdl_usermenu` (decisión de implementación futura).
 
 | ID | Prueba | Pasos | Resultado esperado | Estado |
 |---|---|---|---|---|
-| TC-L-01 | Checkbox aviso en registro | Ir a "Criar conta" | Checkbox obligatorio presente y funcional | ☐ |
-| TC-L-02 | Banner cookies | Visitar portada anónimo | Banner visible con Aceptar/Recusar | ☐ |
-| TC-L-03 | Fuente legal en footer | Portada | Aviso de Privacidad y Términos accesibles | ☐ |
-| TC-L-04 | Solicitud de borrado de cuenta | Enviar solicitud al admin | Proceso documentado y accesible | ☐ |
-| TC-L-05 | Sin acceso público a videos | Video sin login | No se reproduce ni se descarga | ☐ |
-| TC-L-06 | Lista de autorizados | Revisar usuarios inscritos | Coincide con el registro autorizado (RF-L-10) | ☐ |
+| TC-L-01 | Aceptación obligatoria de política (reemplaza "checkbox en registro" — ya no hay registro público) | Cualquier usuario sin aceptación pendiente intenta usar el sitio | Moodle exige aceptar Aviso de Privacidade y Termos de Uso antes de continuar | 🟡 config verificada (`mdl_tool_policy_acceptances` vacío para el Dr., políticas `AGREEMENT_COMPULSORY`); flujo completo no simulado de punta a punta contra la cuenta real del Dr. para no alterarle la clave |
+| TC-L-02 | Banner cookies | Visitar portada anónimo | Banner visible con Aceptar/Recusar | ⬜ bloqueado — Moodle 4.5 no trae uno nativo, pasa a Fase 5 |
+| TC-L-03 | Fuente legal en footer | Portada | Aviso de Privacidad y Términos accesibles | 🟡 páginas accesibles por URL directa (`admin/tool/policy/view.php`), falta enlazarlas en un footer — bloqueado por Fase 5 |
+| TC-L-04 | Solicitud de borrado de cuenta | Enviar solicitud al admin | Proceso documentado y accesible | 🟡 contacto disponible (email del Dr. en el propio aviso), falta documentar el procedimiento paso a paso |
+| TC-L-05 | Sin acceso público a videos | Video sin login | No se reproduce ni se descarga | ⬜ bloqueado — no hay videos aún (Fase 4) |
+| TC-L-06 | Lista de autorizados | Revisar usuarios inscritos | Coincide con el registro autorizado (RF-L-10) | ☑ (2026-08-31, único usuario real: el Dr., `id=3`) |
 
 ## 7. Riesgos y mitigaciones
 | ID | Descripción | Prob. | Impacto | Mitigación |
