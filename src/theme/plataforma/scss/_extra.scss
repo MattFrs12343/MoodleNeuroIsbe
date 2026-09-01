@@ -524,24 +524,33 @@ body.pagelayout-frontpage #page {
     padding-top: .5rem !important;
 }
 
-// Fondo con más profundidad para la Página Principal y "Meus cursos" — dos
-// manchas suaves de color en las esquinas (mismos azules de marca) más el
-// patrón "sinapse" (nodos + líneas) por encima, bien sutil. Reemplaza la
-// versión anterior (solo el patrón repetido, plano) por pedido del
-// desarrollador de un diseño distinto; se usa el mismo fondo en ambas
-// pantallas para que se sientan parte de la misma experiencia una vez
-// logueado.
+// Fondo con más profundidad, SOLO para la vista logueada ("luego de
+// ingresar"): dos manchas suaves de color en las esquinas (mismos azules de
+// marca) más el patrón "sinapse" (nodos + líneas) por encima. El visitante
+// sin sesión (body.notloggedin) sigue viendo el patrón simple de siempre —
+// este fondo nuevo es específicamente para la Página Principal ya logueado
+// y para "Meus cursos" (que solo existe logueado), no para la portada pública.
 $synapse-bg-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170' viewBox='0 0 170 170'%3E%3Cg fill='none' stroke='%233E92CC' stroke-width='1'%3E%3Cline x1='22' y1='26' x2='76' y2='58' opacity='.24'/%3E%3Cline x1='76' y1='58' x2='46' y2='118' opacity='.18'/%3E%3Cline x1='76' y1='58' x2='134' y2='36' opacity='.24'/%3E%3Cline x1='46' y1='118' x2='104' y2='148' opacity='.16'/%3E%3Cline x1='134' y1='36' x2='154' y2='96' opacity='.18'/%3E%3C/g%3E%3Cg fill='%233E92CC'%3E%3Ccircle cx='22' cy='26' r='2.4' opacity='.34'/%3E%3Ccircle cx='76' cy='58' r='2.8' opacity='.42'/%3E%3Ccircle cx='46' cy='118' r='2.4' opacity='.3'/%3E%3Ccircle cx='134' cy='36' r='2.4' opacity='.34'/%3E%3Ccircle cx='104' cy='148' r='2.2' opacity='.26'/%3E%3Ccircle cx='154' cy='96' r='2' opacity='.26'/%3E%3C/g%3E%3C/svg%3E");
 
-body.pagelayout-frontpage #page,
+// Portada pública (sin sesión) — patrón simple, sin degradados, igual que antes.
+body.pagelayout-frontpage.notloggedin #page {
+    background-image: $synapse-bg-light;
+    background-repeat: repeat;
+    background-size: 170px 170px;
+}
+
+// Vista logueada (Página Principal ya con sesión + Meus cursos) — diseño
+// DISTINTO al de puntos/líneas ("constelaciones"): un degradado suave tipo
+// "mesh" con varias manchas de color superpuestas, sin ningún punto ni línea,
+// en los mismos azules de marca. Pedido explícito del desarrollador de
+// cambiar ese fondo por otra cosa, no solo sumarle color encima del patrón.
+body.pagelayout-frontpage:not(.notloggedin) #page,
 body.pagelayout-mycourses #page {
     background-image:
-        $synapse-bg-light,
-        radial-gradient(1100px 480px at 8% -8%, rgba($sky, .16) 0%, rgba($sky, 0) 60%),
-        radial-gradient(900px 460px at 100% 105%, rgba($blue-deep, .12) 0%, rgba($blue-deep, 0) 60%);
-    background-repeat: repeat, no-repeat, no-repeat;
-    background-position: 0 0, 0 0, 100% 100%;
-    background-size: 170px 170px, auto, auto;
+        radial-gradient(900px 620px at 6% 0%, rgba($sky, .22) 0%, rgba($sky, 0) 55%),
+        radial-gradient(800px 560px at 96% 18%, rgba($blue-deep, .16) 0%, rgba($blue-deep, 0) 55%),
+        radial-gradient(1000px 700px at 50% 115%, rgba($blue, .18) 0%, rgba($blue, 0) 55%);
+    background-repeat: no-repeat, no-repeat, no-repeat;
     background-attachment: fixed, fixed, fixed;
 }
 
