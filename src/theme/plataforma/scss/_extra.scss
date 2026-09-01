@@ -184,6 +184,16 @@ a:hover { color: darken($sky, 10%); }
         filter: invert(1);
     }
 
+    // Enlace de login del invitado ("Acessar", arriba a la derecha) — es un <a>
+    // plano dentro de `.usermenu .login`, SIN clase `.nav-link`, así que tomaba el
+    // color de link por defecto ($blue-deep = azul oscuro) = casi invisible sobre
+    // este navbar oscuro (se veía muy tenue tanto en móvil como en desktop).
+    .usermenu .login a {
+        color: rgba(255, 255, 255, .88) !important;
+
+        &:hover, &:focus { color: $sky-soft !important; }
+    }
+
     // El "more menu" de Boost (core/moremenu) marca hover/activo con
     // `background-color: $gray-100` (gris casi blanco) y esquinas cuadradas
     // (theme/boost/scss/moodle/moremenu.scss). Sobre este navbar oscuro esa caja
@@ -552,6 +562,14 @@ body.pagelayout-mycourses #page {
         radial-gradient(1000px 700px at 50% 115%, rgba($blue, .18) 0%, rgba($blue, 0) 55%);
     background-repeat: no-repeat, no-repeat, no-repeat;
     background-attachment: fixed, fixed, fixed;
+
+    // En móvil `background-attachment: fixed` es problemático (iOS Safari lo
+    // ignora o lo renderiza mal, con saltos al hacer scroll). Se pasa a `scroll`
+    // bajo 768px — el degradado sigue viéndose igual, solo se mueve con el
+    // contenido en vez de quedar fijo al viewport.
+    @media (max-width: 767px) {
+        background-attachment: scroll, scroll, scroll;
+    }
 }
 
 // Espacio "fantasma" real encontrado con DevTools: Moodle agrega un <br> suelto
