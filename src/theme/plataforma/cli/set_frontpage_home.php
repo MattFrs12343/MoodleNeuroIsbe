@@ -27,11 +27,6 @@ $html = <<<HTML
         <h1 class="hero-title">NeuroIsbe</h1>
         <p class="hero-subtitle">Videoaulas, materiais e acompanhamento do seu progresso, tudo em um só lugar, no seu ritmo.</p>
         <a class="btn btn-primary btn-lg" href="{$loginurl}">Entrar</a>
-        <ul class="hero-trust">
-            <li>Acesso individual e seguro</li>
-            <li>Conteúdo 100% em português</li>
-            <li>Estude no seu próprio ritmo</li>
-        </ul>
     </div>
 </div>
 <div class="features-section">
@@ -43,22 +38,22 @@ $html = <<<HTML
         <div class="feature-item">
             <span class="feature-icon feature-icon--video"></span>
             <h3>Videoaulas</h3>
-            <p>Aulas organizadas por módulo, disponíveis sempre que você precisar rever um conteúdo.</p>
+            <p>Disponíveis quando você precisar.</p>
         </div>
         <div class="feature-item">
             <span class="feature-icon feature-icon--download"></span>
             <h3>Materiais para baixar</h3>
-            <p>Baixe apostilas e áudios de apoio para estudar também offline, no seu tempo.</p>
+            <p>Estude também offline.</p>
         </div>
         <div class="feature-item">
             <span class="feature-icon feature-icon--progress"></span>
             <h3>Progresso no seu ritmo</h3>
-            <p>Avance módulo a módulo e acompanhe sua evolução, sem prazos nem pressa.</p>
+            <p>Sem prazos nem pressa.</p>
         </div>
         <div class="feature-item">
             <span class="feature-icon feature-icon--lock"></span>
             <h3>Acesso seguro e pessoal</h3>
-            <p>Conteúdo protegido: acesso individual e intransferível, só seu.</p>
+            <p>Individual e intransferível.</p>
         </div>
     </div>
 </div>
